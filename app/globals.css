@@ -1,0 +1,254 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ */
+/* Theme tokens — generate Tailwind utilities (bg-night, text-cream…) */
+/* `inline` so font tokens resolve the next/font CSS variables.       */
+/* ------------------------------------------------------------------ */
+@theme inline {
+  --color-night: #0e0a16;
+  --color-night-soft: #171021;
+  --color-ink: #241433;
+  --color-cream: #f4eadc;
+  --color-heat-violet: #6e2ba8;
+  --color-heat-magenta: #c4408f;
+  --color-heat-orange: #ff7a2f;
+  --color-heat-glow: #ffd9a8;
+  --color-neon-pink: #ff5ec4;
+
+  --radius-pill: 999px;
+  --radius-card: 56px;
+  --radius-vinyl: 24px;
+
+  --font-sans: var(--font-sans-var), "Helvetica Neue", sans-serif;
+  --font-serif: var(--font-serif-var), Georgia, serif;
+
+  --text-lg: 1.375rem;
+  --text-manifesto: clamp(2rem, 4.5vw, 3.5rem);
+  --text-manifesto--line-height: 1.35;
+  --text-display: clamp(6rem, 22vw, 26rem);
+  --text-display--line-height: 0.85;
+}
+
+/* ------------------------------------------------------------------ */
+/* Non-utility tokens — read directly by CSS and GSAP                  */
+/* ------------------------------------------------------------------ */
+:root {
+  --color-cream-dim: rgba(244, 234, 220, 0.55);
+  --color-outline: rgba(244, 234, 220, 0.14);
+  --gradient-heat: radial-gradient(
+    120% 90% at 50% 100%,
+    #ffd9a8 0%,
+    #ff7a2f 28%,
+    #c4408f 55%,
+    #6e2ba8 74%,
+    #0e0a16 100%
+  );
+  --section-gap: clamp(96px, 14vh, 200px);
+  --header-h: 66px; /* 65.08px in the maquette */
+}
+
+/* ------------------------------------------------------------------ */
+/* Custom utilities                                                    */
+/* ------------------------------------------------------------------ */
+
+/* Giant outline titles ("Diva" / "lines"). Stroke-only glyphs with a
+   solid low-opacity fallback where text-stroke is unsupported. */
+@utility text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--color-outline);
+  @supports not (-webkit-text-stroke: 1px #fff) {
+    color: var(--color-outline);
+  }
+}
+
+@utility container-editorial {
+  width: 100%;
+  max-width: 1360px;
+  margin-inline: auto;
+  padding-inline: clamp(20px, 5vw, 80px);
+}
+
+/* Manifesto fill — the type is a mask over a two-stop gradient whose
+   boundary (--fill) sweeps down the block. Default 115% = fully lit
+   (no-JS / reduced-motion baseline); the scroll scrub drives it from
+   -15% to 115% with a soft 12% feather. */
+@utility manifesto-fill {
+  --fill: 115%;
+  color: transparent;
+  background-image: linear-gradient(
+    180deg,
+    var(--color-cream) calc(var(--fill) - 12%),
+    var(--color-cream-dim) calc(var(--fill) + 12%)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Living film grain — a static noise tile jumped around in discrete
+   steps, looping forever. transform-only (compositor-friendly); the
+   global reduced-motion rule freezes it. */
+@keyframes grain-jump {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  10% {
+    transform: translate(-5%, -8%);
+  }
+  20% {
+    transform: translate(-12%, 4%);
+  }
+  30% {
+    transform: translate(6%, -18%);
+  }
+  40% {
+    transform: translate(-4%, 18%);
+  }
+  50% {
+    transform: translate(-12%, 8%);
+  }
+  60% {
+    transform: translate(12%, 1%);
+  }
+  70% {
+    transform: translate(1%, 12%);
+  }
+  80% {
+    transform: translate(3%, 24%);
+  }
+  90% {
+    transform: translate(-8%, 8%);
+  }
+}
+
+@utility grain-live {
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.8'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  /* multiply: dark grain that eats into the glow and melts into the
+     night — texture reads as part of the background, not dust on top */
+  mix-blend-mode: multiply;
+  animation: grain-jump 4s steps(10) infinite;
+}
+
+/* Heat CTA — gradient pill with a feathered glow bleeding past the
+   edges (blurred ::before clone). Dark ink text for contrast; hover
+   breathes the glow. */
+@utility cta-heat {
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(100deg, #d1569e 0%, #ff7a2f 55%, #ffd9a8 100%);
+  color: var(--color-night);
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    z-index: -1;
+    border-radius: inherit;
+    background: linear-gradient(100deg, #d1569e 0%, #ff7a2f 55%, #ffd9a8 100%);
+    filter: blur(16px);
+    opacity: 0.65;
+    transition: opacity 0.3s ease;
+  }
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
+/* Diagonal sheen sweeping across the CTA on hover (spec §3.4) */
+@utility cta-sheen {
+  position: relative;
+  overflow: hidden;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+      120deg,
+      transparent 35%,
+      rgba(255, 217, 168, 0.22) 50%,
+      transparent 65%
+    );
+    background-size: 250% 100%;
+    background-position: 120% 0;
+    transition: background-position 0.6s ease;
+    pointer-events: none;
+  }
+  &:hover::after {
+    background-position: -20% 0;
+  }
+}
+
+/* Translucent pill surface (waitlist input, header after scroll) */
+@utility surface-veil {
+  background: rgba(23, 16, 33, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: inset 0 0 0 1px rgba(244, 234, 220, 0.12);
+}
+
+/* ------------------------------------------------------------------ */
+/* Base                                                                */
+/* ------------------------------------------------------------------ */
+@layer base {
+  html {
+    scroll-behavior: auto; /* Lenis owns scrolling; native fallback is instant */
+  }
+
+  body {
+    background: var(--color-night);
+    color: var(--color-cream);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--color-heat-magenta);
+    color: var(--color-cream);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-cream);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Intro gating. The preloader is opt-in: hidden unless the pre-paint  */
+/* script in layout.tsx marks the session "pending", and hidden again  */
+/* once the timeline flips the attribute to "done". No-JS visitors     */
+/* never see it. Page content always paints from the first frame — it  */
+/* just sits beneath the opaque preloader until the intro timeline     */
+/* reveals it — which keeps LCP early.                                 */
+/* ------------------------------------------------------------------ */
+.preloader {
+  display: none;
+}
+html[data-intro="pending"] .preloader {
+  display: flex;
+}
+
+/* Reduced motion: kill CSS-driven loops (GSAP handles its own branch) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
