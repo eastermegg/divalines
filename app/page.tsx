@@ -1,5 +1,5 @@
-import CollectionTeaser from "@/components/CollectionTeaser";
 import Footer from "@/components/Footer";
+import LookViewer from "@/components/LookViewer";
 import Header from "@/components/Header";
 import Preloader from "@/components/Preloader";
 import SmoothScroll from "@/components/SmoothScroll";
@@ -17,7 +17,7 @@ export default function Page() {
       <main>
         <Hero />
         <Manifesto />
-        <CollectionTeaser />
+        <LookViewer />
       </main>
       <Footer />
     </div>
