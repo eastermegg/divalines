@@ -151,12 +151,13 @@ export default function Preloader() {
         <ChromaticWaves />
       </div>
 
-      {/* centered lockup: wordmark rising through its mask, tagline beneath,
-          both seated on a radial black oval against the dot field */}
-      <div className="relative flex flex-col items-center px-6">
+      {/* top-left lockup: wordmark rising through its mask, tagline beneath,
+          left-aligned and seated on a radial black glow. Sits diagonally
+          opposite the count. */}
+      <div className="absolute top-8 left-8 flex flex-col items-start pr-6 sm:top-10 sm:left-10">
         <div
           data-pl-oval
-          className="absolute -inset-x-72 -inset-y-32 bg-[radial-gradient(ellipse_50%_50%_at_center,rgba(0,0,0,0.9)_0%,rgba(0,0,0,0.6)_50%,transparent_78%)]"
+          className="absolute -inset-x-40 -inset-y-28 bg-[radial-gradient(ellipse_62%_62%_at_28%_42%,rgba(0,0,0,0.9)_0%,rgba(0,0,0,0.55)_48%,transparent_76%)]"
         />
         <div className="relative overflow-hidden py-[6px]">
           <div data-pl-logo className="select-none">
@@ -165,7 +166,7 @@ export default function Preloader() {
         </div>
         <p
           data-pl-tag
-          className="relative mt-5 max-w-[44rem] text-center font-display text-[clamp(1.5rem,3.4vw,2.25rem)] leading-[1.08] tracking-[0.02em] text-white italic"
+          className="relative mt-5 max-w-[min(34rem,86vw)] text-left font-display text-[clamp(1.5rem,3.4vw,2.25rem)] leading-[1.08] tracking-[0.02em] text-white italic"
         >
           <span className="block">
             <AccentText text="Heels *dancewear* brand" />
@@ -176,7 +177,7 @@ export default function Preloader() {
         </p>
       </div>
 
-      {/* big 0 → 100 count, pinned to the corner */}
+      {/* big 0 → 100 count, pinned to the opposite (bottom-right) corner */}
       <div data-pl-count className="absolute right-8 bottom-6 overflow-hidden">
         <span
           data-pl-counter

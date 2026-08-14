@@ -22,16 +22,20 @@ export default function WavesExperience() {
         <ChromaticWaves />
       </div>
 
-      {/* the lockup that persists once the intro completes */}
-      <main className="relative flex min-h-dvh flex-col items-center justify-center px-6">
-        <div data-waves-lockup className="relative flex flex-col items-center opacity-0">
-          {/* radial black oval seating the lockup against the dot field */}
+      {/* the lockup that persists once the intro completes — top-left,
+          left-aligned, matching where the preloader leaves it */}
+      <main className="relative min-h-dvh">
+        <div
+          data-waves-lockup
+          className="absolute top-8 left-8 flex flex-col items-start pr-6 opacity-0 sm:top-10 sm:left-10"
+        >
+          {/* radial black glow seating the lockup against the dot field */}
           <div
             aria-hidden="true"
-            className="absolute -inset-x-72 -inset-y-32 bg-[radial-gradient(ellipse_50%_50%_at_center,rgba(0,0,0,0.9)_0%,rgba(0,0,0,0.6)_50%,transparent_78%)]"
+            className="absolute -inset-x-40 -inset-y-28 bg-[radial-gradient(ellipse_62%_62%_at_28%_42%,rgba(0,0,0,0.9)_0%,rgba(0,0,0,0.55)_48%,transparent_76%)]"
           />
           <Wordmark title="Diva Lines" className="relative h-[52px] w-[250px] text-white" />
-          <p className="relative mt-5 max-w-[44rem] text-center font-display text-[clamp(1.5rem,3.4vw,2.25rem)] leading-[1.08] tracking-[0.02em] text-white italic">
+          <p className="relative mt-5 max-w-[min(34rem,86vw)] text-left font-display text-[clamp(1.5rem,3.4vw,2.25rem)] leading-[1.08] tracking-[0.02em] text-white italic">
             <span className="block">
               <AccentText text="Heels *dancewear* brand" />
             </span>
