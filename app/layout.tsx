@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { sans, serif } from "@/lib/fonts";
+import { display, sans, serif } from "@/lib/fonts";
 import { SITE } from "@/lib/site";
 import "./globals.css";
 
@@ -45,7 +45,7 @@ export default function RootLayout({
     // on <html> pre-hydration by design (attribute-level only).
     <html
       lang="en"
-      className={`${sans.variable} ${serif.variable}`}
+      className={`${sans.variable} ${serif.variable} ${display.variable}`}
       suppressHydrationWarning
     >
       <head>

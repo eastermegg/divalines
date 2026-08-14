@@ -11,12 +11,15 @@
   "dependencies": {
     "@gsap/react": "^2.1.2",
     "@paper-design/shaders-react": "^0.0.77",
+    "@react-three/fiber": "^9.7.0",
     "@supabase/supabase-js": "^2.50.0",
     "gsap": "^3.13.0",
     "lenis": "^1.3.4",
     "next": "^15.4.0",
+    "ogl": "^1.0.11",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "three": "^0.185.1",
     "zod": "^3.25.0"
   },
   "devDependencies": {
@@ -24,6 +27,7 @@
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@types/three": "^0.185.4",
     "playwright-core": "^1.62.0",
     "tailwindcss": "^4.1.0",
     "typescript": "^5.8.0"
