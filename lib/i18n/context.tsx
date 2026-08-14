@@ -33,13 +33,3 @@ export function useDictionary(): DictionaryValue {
   }
   return value;
 }
-
-/** Fill `{token}` placeholders in a dictionary string. */
-export function fill(
-  template: string,
-  values: Record<string, string | number>,
-): string {
-  return template.replace(/\{(\w+)\}/g, (_, key: string) =>
-    key in values ? String(values[key]) : `{${key}}`,
-  );
-}
