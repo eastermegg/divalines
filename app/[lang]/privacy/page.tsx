@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SITE } from "@/lib/site";
 import { isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
-import { fill } from "@/lib/i18n/context";
+import { fill } from "@/lib/i18n/fill";
 
 type LangParams = { params: Promise<{ lang: string }> };
 

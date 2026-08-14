@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { countdownParts } from "@/lib/countdown";
 import { gsap } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/lib/motion";
-import { fill, useDictionary } from "@/lib/i18n/context";
+import { useDictionary } from "@/lib/i18n/context";
+import { fill } from "@/lib/i18n/fill";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 

@@ -6,7 +6,8 @@ import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { MOTION_OK, prefersReducedMotion } from "@/lib/motion";
 import { LookArt } from "./garments";
 import AccentText from "@/components/AccentText";
-import { fill, useDictionary } from "@/lib/i18n/context";
+import { useDictionary } from "@/lib/i18n/context";
+import { fill } from "@/lib/i18n/fill";
 import { en } from "@/lib/i18n/dictionaries/en";
 
 /**
