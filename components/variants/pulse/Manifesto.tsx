@@ -5,7 +5,8 @@ import { useRef } from "react";
 import PortraitCard from "@/components/PortraitCard";
 import { gsap, SplitText } from "@/lib/gsap";
 import { MOTION_OK } from "@/lib/motion";
-import { MANIFESTO } from "@/lib/site";
+import { useDictionary } from "@/lib/i18n/context";
+import AccentText, { plainText } from "@/components/AccentText";
 
 /**
  * V3 manifesto — harder cuts: a scrambling section label, snappier
@@ -13,6 +14,7 @@ import { MANIFESTO } from "@/lib/site";
  * and cards that tilt toward a fine pointer (≤6°, perspective 700).
  */
 export default function Manifesto() {
+  const { dict } = useDictionary();
   const ref = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -22,7 +24,7 @@ export default function Manifesto() {
         // scramble-in section label
         gsap.to("[data-pulse-label]", {
           scrambleText: {
-            text: "the manifesto",
+            text: dict.manifestoLabel,
             chars: "✦╱╲—◆",
             speed: 0.4,
           },
@@ -156,7 +158,7 @@ export default function Manifesto() {
     <section ref={ref} data-manifesto-section className="relative py-[var(--section-gap)]">
       <div className="container-editorial">
         <p className="mb-10 text-xs tracking-[0.3em] text-neon-pink uppercase">
-          <span className="sr-only">the manifesto</span>
+          <span className="sr-only">{dict.manifestoLabel}</span>
           <span data-pulse-label aria-hidden="true">
             ✦✦✦
           </span>
@@ -165,23 +167,23 @@ export default function Manifesto() {
           <PortraitCard
             heatFrom="left"
             rotate={-3}
-            alt="Dancer portrait, heat-cam treatment"
+            alt={dict.portraitAlt.heatCam}
             className="col-span-9 col-start-1 sm:col-span-6 lg:col-span-3 lg:row-start-1 lg:-mt-6"
           />
           <div className="col-span-12 self-center lg:col-span-6 lg:col-start-4 lg:row-span-2 lg:row-start-1">
-              <p className="sr-only">{MANIFESTO}</p>
+              <p className="sr-only">{plainText(dict.manifesto)}</p>
               <p
                 aria-hidden="true"
                 data-manifesto
-                className="font-serif text-manifesto text-cream italic"
+                className="font-display text-manifesto text-cream italic"
               >
-                {MANIFESTO}
+                <AccentText text={dict.manifesto} />
               </p>
             </div>
           <PortraitCard
             heatFrom="right"
             rotate={3}
-            alt="Dancer portrait, neon waves"
+            alt={dict.portraitAlt.neonWaves}
             className="col-span-9 col-start-4 sm:col-span-6 sm:col-start-7 lg:col-span-3 lg:col-start-10 lg:row-start-2 lg:mt-16"
           />
           <PortraitCard
@@ -189,7 +191,7 @@ export default function Manifesto() {
             heatFrom="center"
             waves={false}
             rotate={-2}
-            alt="Dance floor, heat horizon"
+            alt={dict.portraitAlt.danceFloor}
             className="col-span-12 sm:col-span-9 lg:col-span-5 lg:col-start-2 lg:row-start-3 lg:mt-10"
           />
         </div>

@@ -41,8 +41,9 @@ for the full provisioning guide (Supabase → Notion → webhook → Vercel).
 
 ## Placeholders / drop-in seams
 
-- **Fonts**: Fraunces + Archivo (Google) stand in for PP Editorial New +
-  PP Neue Montreal — swap in `lib/fonts.ts`, see `public/fonts/README.md`.
+- **Fonts**: real brand faces self-hosted — Greed Narrow Medium Italic
+  (display, TRIAL cut), Migra Italic Extralight (serif), Switzer
+  (sans) — see `lib/fonts.ts` and `public/fonts/README.md`.
 - **Images**: the dancer silhouette and portrait cards are generative
   (SVG + gradients). `PortraitCard` takes a `src` prop for real photos;
   replace `DancerSilhouette` with a detoured `next/image` when shot.

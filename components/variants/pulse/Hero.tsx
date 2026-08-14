@@ -7,16 +7,17 @@ import DancerSilhouette from "@/components/DancerSilhouette";
 import WaitlistForm from "@/components/WaitlistForm";
 import { gsap } from "@/lib/gsap";
 import { MOTION_OK } from "@/lib/motion";
-import { HERO } from "@/lib/site";
+import { useDictionary } from "@/lib/i18n/context";
 
 /**
  * V3 "Night Pulse" hero — club-night maximal. Three depth planes
  * (gradient → neon rings + pink echo → silhouette) scrub at different
  * speeds; big concentric rings breathe continuously; titles are stacked
- * hard-left uppercase and part violently on scroll. Vestibular-safe: no
+ * hard-left lowercase and part violently on scroll. Vestibular-safe: no
  * strobing, all loops are slow sine breathing.
  */
 export default function Hero() {
+  const { dict } = useDictionary();
   const ref = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -64,7 +65,7 @@ export default function Hero() {
       data-hero
       className="relative flex min-h-svh flex-col justify-end pb-[clamp(2rem,6vh,4.5rem)]"
     >
-      <h1 className="sr-only">Diva Lines — independ heels dancewear, designed in Paris</h1>
+      <h1 className="sr-only">{dict.hero.sr}</h1>
 
       {/* Plane 1 — hard heat, more saturated than V1 */}
       <div
@@ -118,19 +119,19 @@ export default function Hero() {
 
       <CornerFrame />
 
-      {/* Stacked hard-left uppercase display */}
+      {/* Stacked hard-left lowercase display (brand rule: never all caps) */}
       <div className="pointer-events-none absolute top-[calc(var(--header-h)-1vh)] left-[-1vw] select-none">
         <span
           aria-hidden="true"
           data-title-diva
-          className="text-outline block font-sans text-display font-medium tracking-[-0.03em] uppercase"
+          className="text-outline block font-display text-display font-medium italic tracking-[-0.03em] lowercase"
         >
           Diva
         </span>
         <span
           aria-hidden="true"
           data-title-lines
-          className="text-outline mt-[-0.18em] block pl-[0.8em] font-sans text-display font-medium tracking-[-0.03em] uppercase"
+          className="text-outline mt-[-0.18em] block pl-[0.8em] font-display text-display font-medium italic tracking-[-0.03em] lowercase"
         >
           Lines
         </span>
@@ -138,17 +139,17 @@ export default function Hero() {
 
       <div className="container-editorial relative z-10">
         <div data-hero-hook className="ml-auto max-w-[560px] text-right sm:text-left">
-          {HERO.hook.map((line) => (
+          {dict.hero.hook.map((line) => (
             <span
               key={line}
               data-hook-line
-              className="block overflow-hidden text-lg leading-snug font-medium tracking-tight text-cream uppercase sm:text-[1.6rem]"
+              className="block overflow-hidden text-lg leading-snug font-medium tracking-tight text-cream sm:text-[1.6rem]"
             >
               <span className="block">{line}</span>
             </span>
           ))}
-          <p data-hook-para className="mt-4 max-w-[44ch] text-sm leading-relaxed text-cream/70 sm:ml-0">
-            {HERO.paragraph}
+          <p data-hook-para className="mt-4 max-w-[44ch] text-[13px] leading-[1.35] text-cream/70 sm:ml-0">
+            {dict.hero.paragraph}
           </p>
         </div>
 

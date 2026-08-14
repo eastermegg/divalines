@@ -3,9 +3,29 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/lib/motion";
-import { FORM } from "@/lib/site";
+import { useDictionary } from "@/lib/i18n/context";
 
 type Status = "idle" | "loading" | "success" | "error";
+
+/** Warm heat-palette gradients used for the fake "who's joined" avatars.
+ * No real faces — just glowing orbs that read as a community. */
+const AVATAR_GRADIENTS = [
+  "linear-gradient(135deg,#ff7a2f,#ff5ec4)",
+  "linear-gradient(135deg,#ff5ec4,#6e2ba8)",
+  "linear-gradient(135deg,#ffd9a8,#ff7a2f)",
+  "linear-gradient(135deg,#c4408f,#6e2ba8)",
+  "linear-gradient(135deg,#ff7a2f,#c4408f)",
+  "linear-gradient(135deg,#ff5ec4,#ffd9a8)",
+  "linear-gradient(135deg,#6e2ba8,#ff5ec4)",
+  "linear-gradient(135deg,#ffb347,#ff5ec4)",
+];
+
+/** Seed the counter from a plausible, already-growing crowd. */
+const BASE_COUNT = 547;
+/** Most avatars we ever show; everyone else lives in the counter. */
+const MAX_AVATARS = 4;
+
+type Avatar = { key: number; gradient: string };
 
 function collectUtm(): Record<string, string> | undefined {
   if (typeof window === "undefined") return undefined;
@@ -17,12 +37,65 @@ function collectUtm(): Record<string, string> | undefined {
   return Object.keys(utm).length ? utm : undefined;
 }
 
-export default function WaitlistForm({ compact = false }: { compact?: boolean }) {
+export default function WaitlistForm({
+  compact = false,
+  onLight = false,
+}: {
+  compact?: boolean;
+  /** Restyle for a light background (e.g. the footer heat gradient). */
+  onLight?: boolean;
+}) {
+  const { dict, locale } = useDictionary();
+  const FORM = dict.form;
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
   const successRef = useRef<HTMLParagraphElement>(null);
   const inputId = useId();
   const errorId = useId();
+
+  // Fake social proof — a rotating avatar stack (max 4) and a counter that
+  // ticks up each time someone joins. Deterministic initial values keep SSR
+  // and the first client render in sync (no hydration mismatch).
+  const [count, setCount] = useState(BASE_COUNT);
+  const [avatars, setAvatars] = useState<Avatar[]>(() =>
+    Array.from({ length: MAX_AVATARS }, (_, i) => ({
+      key: i,
+      gradient: AVATAR_GRADIENTS[i % AVATAR_GRADIENTS.length],
+    })),
+  );
+  const seedRef = useRef(MAX_AVATARS);
+  const stackRef = useRef<HTMLDivElement>(null);
+  const countRef = useRef<HTMLSpanElement>(null);
+  const didJoin = useRef(false);
+
+  // Slot a fresh avatar in at the front, drop the oldest, and bump the count
+  // by the new joiner plus a couple of "others" so the crowd feels alive.
+  function registerJoin() {
+    setAvatars((prev) => {
+      const key = seedRef.current++;
+      const next: Avatar = {
+        key,
+        gradient: AVATAR_GRADIENTS[key % AVATAR_GRADIENTS.length],
+      };
+      return [next, ...prev].slice(0, MAX_AVATARS);
+    });
+    setCount((c) => c + 1 + Math.floor(Math.random() * 3));
+    didJoin.current = true;
+  }
+
+  // Contrast set — dark veil + cream text by default, or a frosted light
+  // pill with ink text + night CTA when placed on a bright gradient.
+  const surface = onLight ? "surface-veil-light" : "surface-veil";
+  const inputText = onLight
+    ? "text-night placeholder:text-night/45"
+    : "text-cream placeholder:text-cream/40";
+  const ctaClass = onLight ? "bg-night text-cream hover:bg-night/85" : "cta-heat";
+  const spinnerClass = onLight
+    ? "border-cream/30 border-t-cream"
+    : "border-night/30 border-t-night";
+  const consentText = onLight ? "text-night/70" : "text-cream/60";
+  const errorText = onLight ? "text-[#8f0f37]" : "text-neon-pink";
+  const successText = onLight ? "text-night" : "text-cream";
 
   // Success pop: the pill settles in with a flash of the orange glow.
   useEffect(() => {
@@ -49,6 +122,31 @@ export default function WaitlistForm({ compact = false }: { compact?: boolean })
       );
   }, [status]);
 
+  // New joiner: pop the freshly-added avatar in and nudge the counter.
+  useEffect(() => {
+    if (!didJoin.current || prefersReducedMotion()) return;
+    const orb = stackRef.current?.firstElementChild;
+    if (orb) {
+      gsap.fromTo(
+        orb,
+        { scale: 0, xPercent: -60, autoAlpha: 0 },
+        { scale: 1, xPercent: 0, autoAlpha: 1, duration: 0.5, ease: "back.out(2)" },
+      );
+    }
+    if (countRef.current) {
+      gsap.fromTo(
+        countRef.current,
+        { scale: 1.35, color: "#ff5ec4" },
+        {
+          scale: 1,
+          color: onLight ? "#0e0a16" : "#f4eadc",
+          duration: 0.5,
+          ease: "power2.out",
+        },
+      );
+    }
+  }, [count]);
+
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (status === "loading") return;
@@ -73,6 +171,7 @@ export default function WaitlistForm({ compact = false }: { compact?: boolean })
         body: JSON.stringify({ email, company, utm: collectUtm() }),
       });
       if (res.ok) {
+        registerJoin();
         setStatus("success");
       } else if (res.status === 429) {
         setError(FORM.errorRateLimited);
@@ -90,16 +189,52 @@ export default function WaitlistForm({ compact = false }: { compact?: boolean })
     }
   }
 
+  // Persistent social-proof row — an overlapping avatar stack (newest on top)
+  // plus the live count. Rendered under both the form and the success pill so
+  // the freshly-added avatar stays visible after someone joins.
+  const proof = (
+    <div
+      className={`mt-3.5 flex items-center gap-3 px-2 sm:px-4 ${
+        compact ? "" : "justify-center"
+      }`}
+    >
+      <div ref={stackRef} className="flex items-center" aria-hidden="true">
+        {avatars.map((a, i) => (
+          <span
+            key={a.key}
+            className="block size-8 rounded-full border-2 shadow-[0_2px_10px_rgba(0,0,0,0.28)]"
+            style={{
+              backgroundImage: a.gradient,
+              borderColor: onLight ? "#f4eadc" : "#0e0a16",
+              marginLeft: i === 0 ? 0 : -11,
+              zIndex: avatars.length - i,
+            }}
+          />
+        ))}
+      </div>
+      <p className={`text-xs ${consentText}`}>
+        {FORM.proofBefore}{" "}
+        <span ref={countRef} className={`font-medium ${successText}`}>
+          {count.toLocaleString(locale === "en" ? "en-GB" : "fr-FR")}
+        </span>{" "}
+        {FORM.proof}
+      </p>
+    </div>
+  );
+
   if (status === "success") {
     return (
-      <p
-        ref={successRef}
-        data-waitlist-success
-        className="surface-veil inline-flex h-[54px] items-center rounded-pill px-8 font-serif text-base italic text-cream"
-        role="status"
-      >
-        {FORM.success}
-      </p>
+      <div data-waitlist className={compact ? "" : "w-full max-w-[560px]"}>
+        <p
+          ref={successRef}
+          data-waitlist-success
+          className={`${surface} ${successText} flex h-[54px] w-full items-center justify-center rounded-pill px-8 font-serif text-base italic sm:h-[68px]`}
+          role="status"
+        >
+          {FORM.success}
+        </p>
+        {proof}
+      </div>
     );
   }
 
@@ -108,10 +243,10 @@ export default function WaitlistForm({ compact = false }: { compact?: boolean })
       <form
         onSubmit={onSubmit}
         noValidate
-        className="surface-veil flex flex-col gap-2 rounded-[28px] p-[7px] sm:h-[68px] sm:flex-row sm:items-center sm:rounded-pill"
+        className={`${surface} flex flex-col gap-2 rounded-[28px] p-[7px] sm:h-[68px] sm:flex-row sm:items-center sm:rounded-pill`}
       >
         <label htmlFor={inputId} className="sr-only">
-          Email address
+          {dict.waitlist.emailLabel}
         </label>
         <input
           id={inputId}
@@ -122,7 +257,7 @@ export default function WaitlistForm({ compact = false }: { compact?: boolean })
           placeholder={FORM.placeholder}
           aria-invalid={status === "error" || undefined}
           aria-describedby={status === "error" ? errorId : undefined}
-          className="h-[54px] min-w-0 flex-1 rounded-pill bg-transparent px-[22px] text-sm text-cream placeholder:text-cream/40 focus-visible:outline-offset-[-2px]"
+          className={`h-[54px] min-w-0 flex-1 rounded-pill bg-transparent px-[22px] text-base ${inputText} focus-visible:outline-offset-[-2px]`}
         />
         {/* Honeypot — invisible to humans, tempting to bots */}
         <input
@@ -137,12 +272,12 @@ export default function WaitlistForm({ compact = false }: { compact?: boolean })
           type="submit"
           data-waitlist-cta
           disabled={status === "loading"}
-          className="cta-heat h-[54px] shrink-0 cursor-pointer rounded-pill px-7 text-base font-medium transition-opacity disabled:opacity-70"
+          className={`${ctaClass} h-[54px] shrink-0 cursor-pointer rounded-pill px-7 text-base font-medium transition-[background-color,opacity] disabled:opacity-70`}
         >
           {status === "loading" ? (
             <span
-              aria-label="Sending"
-              className="mx-auto block size-4 animate-spin rounded-full border border-night/30 border-t-night"
+              aria-label={dict.waitlist.sending}
+              className={`mx-auto block size-4 animate-spin rounded-full border ${spinnerClass}`}
             />
           ) : (
             <>
@@ -155,21 +290,15 @@ export default function WaitlistForm({ compact = false }: { compact?: boolean })
         </button>
       </form>
 
-      <div className="mt-2.5 px-5">
-        {status === "error" && error ? (
-          <p id={errorId} aria-live="polite" className="text-xs text-neon-pink">
+      {status === "error" && error ? (
+        <div className="mt-2.5 px-5">
+          <p id={errorId} aria-live="polite" className={`text-xs ${errorText}`}>
             {error}
           </p>
-        ) : (
-          <p className="text-xs text-cream/60">
-            {FORM.consent}{" "}
-            <a href="/privacy" className="underline underline-offset-2 hover:text-cream">
-              Privacy policy
-            </a>
-            .
-          </p>
-        )}
-      </div>
+        </div>
+      ) : null}
+
+      {proof}
     </div>
   );
 }
