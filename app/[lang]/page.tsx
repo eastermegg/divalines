@@ -1,9 +1,9 @@
 import Footer from "@/components/Footer";
-import LookViewer from "@/components/LookViewer";
+import LineGallery from "@/components/variants/line/LineGallery";
 import Header from "@/components/Header";
 import Preloader from "@/components/Preloader";
 import SmoothScroll from "@/components/SmoothScroll";
-import Hero from "@/components/variants/heat/Hero";
+import Hero from "@/components/variants/dither/Hero";
 import Manifesto from "@/components/variants/heat/Manifesto";
 import { getReleaseDate } from "@/lib/site";
 
@@ -17,7 +17,7 @@ export default function Page() {
       <main>
         <Hero />
         <Manifesto />
-        <LookViewer />
+        <LineGallery />
       </main>
       <Footer />
     </div>

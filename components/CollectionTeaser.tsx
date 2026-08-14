@@ -4,8 +4,9 @@ import { useGSAP } from "@gsap/react";
 import { useRef } from "react";
 import { gsap } from "@/lib/gsap";
 import { MOTION_OK } from "@/lib/motion";
-import { COLLECTION } from "@/lib/site";
 import { Garment, Hanger } from "./garments";
+import AccentText from "@/components/AccentText";
+import { useDictionary } from "@/lib/i18n/context";
 
 /**
  * Collection teaser — five framed plates on an asymmetric editorial
@@ -18,6 +19,8 @@ import { Garment, Hanger } from "./garments";
  * Reduced motion: strokes fully drawn, frames static.
  */
 export default function CollectionTeaser() {
+  const { dict } = useDictionary();
+  const COLLECTION = dict.collection;
   const ref = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -99,9 +102,9 @@ export default function CollectionTeaser() {
         </p>
         <h2
           id="collection-title"
-          className="mt-4 font-serif text-manifesto text-cream italic"
+          className="mt-4 font-display text-manifesto text-cream italic"
         >
-          {COLLECTION.title}
+          <AccentText text={COLLECTION.title} />
         </h2>
         <p className="mt-3 text-sm text-cream/60">{COLLECTION.sub}</p>
 
@@ -132,6 +135,7 @@ function Plate({
   item: { n: string; name: string };
   index: number;
 }) {
+  const { dict } = useDictionary();
   return (
     <figure
       data-plate
@@ -152,7 +156,7 @@ function Plate({
         <span aria-hidden="true" className="blur-[3px] select-none">
           {item.name}
         </span>
-        <span className="sr-only">— revealed at the drop</span>
+        <span className="sr-only">{dict.collection.revealed}</span>
       </figcaption>
     </figure>
   );

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { countdownParts } from "@/lib/countdown";
 import { gsap } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/lib/motion";
+import { fill, useDictionary } from "@/lib/i18n/context";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -14,6 +15,7 @@ const DAY_MS = 24 * 60 * 60 * 1000;
  * carried by a visually-hidden static sentence.
  */
 export default function Countdown({ target }: { target: string }) {
+  const { dict, locale } = useDictionary();
   const [now, setNow] = useState<number | null>(null);
 
   useEffect(() => {
@@ -28,22 +30,23 @@ export default function Countdown({ target }: { target: string }) {
   const targetDate = new Date(target);
   const humanDate = Number.isNaN(targetDate.getTime())
     ? target
-    : targetDate.toLocaleDateString("en-GB", {
+    : targetDate.toLocaleDateString(locale === "en" ? "en-GB" : "fr-FR", {
         day: "numeric",
         month: "long",
         year: "numeric",
       });
 
   return (
-    // Maquette style: two left-aligned 15.8px lines — label Medium,
-    // digits Light — matching the header's brand block typography.
-    <div className="text-left text-[15.8px] leading-[17.33px] tracking-[-0.19px]">
+    // Maquette style: two left-aligned lines — label Medium, digits
+    // Regular (Switzer ships 400/500 only) — matching the header's brand
+    // block typography.
+    <div className="text-left text-[13px] leading-[1.15] tracking-[-0.19px]">
       <p className={urgent ? "font-medium text-neon-pink" : "font-medium text-cream"}>
-        Time before release
+        {dict.countdown.label}
       </p>
       <p
         aria-hidden="true"
-        className="font-light tabular-nums text-cream"
+        className="font-normal tabular-nums text-cream"
         data-countdown
       >
         <Group value={parts.days} />
@@ -55,7 +58,7 @@ export default function Countdown({ target }: { target: string }) {
         <Group value={parts.seconds} />
       </p>
       <p className="sr-only" aria-live="off">
-        Launching {humanDate}.
+        {fill(dict.countdown.launching, { date: humanDate })}
       </p>
     </div>
   );

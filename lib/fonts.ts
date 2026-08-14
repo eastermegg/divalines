@@ -1,17 +1,33 @@
 /**
- * Font layer — swappable seam.
+ * Font layer — the brand's real three-face system, all self-hosted
+ * from public/fonts/:
  *
- *   --font-serif-var  Migra Italic Extralight (brand display serif,
- *                     self-hosted from public/fonts/)
- *   --font-sans-var   Archivo (Google) ≈ PP Neue Montreal stand-in
+ *   --font-display-var  Greed Narrow Medium Italic (TRIAL) — the
+ *                       wordmark-scale display face (giant "Divalines"
+ *                       type). Italic-only, weight 500.
+ *   --font-serif-var    Migra Italic Extralight — editorial serif
+ *                       accents ("join the first line."). Italic-only,
+ *                       weight 200.
+ *   --font-sans-var     Switzer — all UI/body text. Regular + Medium,
+ *                       with true italics for both.
  *
- * Every component consumes the CSS variables via --font-serif /
- * --font-sans in globals.css, so swapping a family only touches this
- * file. Migra ships italic-only at 200 — all serif usage in the app
- * requests `italic`, so the face always matches.
+ * Every component consumes the CSS variables via --font-display /
+ * --font-serif / --font-sans in globals.css, so swapping a family only
+ * touches this file. The italic-only faces (Greed, Migra) are always
+ * requested with `italic` in markup so the face matches.
+ *
+ * NOTE: Greed Narrow is the TRIAL cut — license the full version
+ * before launch.
  */
-import { Archivo } from "next/font/google";
 import localFont from "next/font/local";
+
+export const display = localFont({
+  src: "../public/fonts/GreedNarrow-MediumItalic.woff2",
+  weight: "500",
+  style: "italic",
+  variable: "--font-display-var",
+  display: "swap",
+});
 
 export const serif = localFont({
   src: "../public/fonts/MigraItalic-ExtralightItalic.woff2",
@@ -21,9 +37,13 @@ export const serif = localFont({
   display: "swap",
 });
 
-export const sans = Archivo({
-  subsets: ["latin"],
-  weight: ["300", "400", "500"],
+export const sans = localFont({
+  src: [
+    { path: "../public/fonts/Switzer-Regular.woff2", weight: "400", style: "normal" },
+    { path: "../public/fonts/Switzer-Italic.woff2", weight: "400", style: "italic" },
+    { path: "../public/fonts/Switzer-Medium.woff2", weight: "500", style: "normal" },
+    { path: "../public/fonts/Switzer-MediumItalic.woff2", weight: "500", style: "italic" },
+  ],
   variable: "--font-sans-var",
   display: "swap",
 });

@@ -8,7 +8,7 @@ import HeatShaderBackground from "@/components/HeatShaderBackground";
 import WaitlistForm from "@/components/WaitlistForm";
 import { gsap } from "@/lib/gsap";
 import { MOTION_OK } from "@/lib/motion";
-import { HERO } from "@/lib/site";
+import { useDictionary } from "@/lib/i18n/context";
 
 /**
  * V1 "Heat" hero — spec-faithful. Scroll parallax (spec §3.3): the
@@ -16,6 +16,7 @@ import { HERO } from "@/lib/site";
  * a night veil dims the heat as the section leaves the viewport.
  */
 export default function Hero() {
+  const { dict } = useDictionary();
   const ref = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -46,7 +47,7 @@ export default function Hero() {
       data-hero
       className="relative flex min-h-svh flex-col justify-end pb-[clamp(2rem,6vh,4.5rem)]"
     >
-      <h1 className="sr-only">Diva Lines — independ heels dancewear, designed in Paris</h1>
+      <h1 className="sr-only">{dict.hero.sr}</h1>
 
       {/* Heat — corner-blob composition (night field, glow clusters in
           opposite corners, calm center for the copy). Static CSS base
@@ -58,7 +59,7 @@ export default function Hero() {
         className="absolute inset-0 origin-bottom"
         style={{
           background:
-            "radial-gradient(52% 48% at 108% -6%, #FFD9A8 0%, #FF7A2F 26%, #C4408F 52%, #6E2BA8 72%, transparent 100%), radial-gradient(56% 52% at -8% 106%, #FFD9A8 0%, #FF7A2F 26%, #C4408F 52%, #6E2BA8 72%, transparent 100%), #0E0A16",
+            "radial-gradient(52% 48% at 108% -6%, #FFF1DC 0%, #FF8A3A 22%, #FF5A12 42%, #C489E8 68%, transparent 100%), radial-gradient(56% 52% at -8% 106%, #FFF1DC 0%, #FF8A3A 22%, #FF5A12 42%, #C489E8 68%, transparent 100%), #0E0A16",
         }}
       >
         <HeatShaderBackground />
@@ -80,7 +81,7 @@ export default function Hero() {
           className="absolute top-1/2 left-1/2 size-[130%] -translate-1/2 rounded-full opacity-35 blur-[70px]"
           style={{
             background:
-              "radial-gradient(circle, #C4408F 0%, #6E2BA8 45%, transparent 70%)",
+              "radial-gradient(circle, #C489E8 0%, #7A3FB0 45%, transparent 70%)",
           }}
         />
         <Image
@@ -123,20 +124,20 @@ export default function Hero() {
           data-hero-hook
           className="max-w-[560px] lg:absolute lg:top-[56.9svh] lg:left-[25.6%] lg:max-w-none"
         >
-          {HERO.hook.map((line) => (
+          {dict.hero.hook.map((line) => (
             <span
               key={line}
               data-hook-line
-              className="block overflow-hidden text-lg leading-snug font-medium text-cream sm:text-[27.3px] sm:leading-[21.84px] sm:tracking-[-1.09px]"
+              className="block overflow-hidden text-lg leading-snug font-medium text-cream sm:text-[27.3px] sm:leading-[1.1] sm:tracking-[-1.09px]"
             >
               <span className="block">{line}</span>
             </span>
           ))}
           <p
             data-hook-para
-            className="mt-4 max-w-[44ch] text-sm leading-relaxed text-cream/85 lg:mt-[38px] lg:w-[257px] lg:text-[15.8px] lg:leading-[17.33px]"
+            className="mt-4 max-w-[44ch] text-[13px] leading-[1.35] text-cream/85 lg:w-[257px]"
           >
-            {HERO.paragraph}
+            {dict.hero.paragraph}
           </p>
         </div>
 

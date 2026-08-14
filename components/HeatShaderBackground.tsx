@@ -1,7 +1,7 @@
 "use client";
 
 import { GrainGradient } from "@paper-design/shaders-react";
-import { useEffect, useState } from "react";
+import { type CSSProperties, useEffect, useState } from "react";
 import { prefersReducedMotion } from "@/lib/motion";
 
 /**
@@ -17,17 +17,46 @@ export default function HeatShaderBackground({
   shape = "corners",
   speed = 0.9,
   className = "",
+  // The shader's field/back tone. Defaults to the night ink; pass
+  // "transparent" (with a transparent colorDark) to let the page
+  // backdrop show through the calm center instead of an opaque plate.
+  colorBack = "#0E0A16",
+  colorDark = "#0E0A16",
+  // Grain strength. `grain` is the living overlay's opacity; `grainNoise`
+  // is the shader's own grain; `grainBlur` (px) softens the gradient —
+  // LOWER it to keep the shader grain crisp instead of melting it away.
+  grain = 0.6,
+  grainNoise = 0.55,
+  grainBlur = 24,
+  // How the living grain overlay blends. Default multiply melts it into
+  // the night; on a dark/transparent field try "soft-light"/"overlay"
+  // so it reads as even texture instead of dark blotches.
+  grainBlend = "multiply",
+  // Colour strength of the gradient — raise for a brighter, hotter field.
+  intensity = 0.3,
 }: {
   shape?: "wave" | "dots" | "truchet" | "corners" | "ripple" | "blob" | "sphere";
   speed?: number;
   className?: string;
+  colorBack?: string;
+  colorDark?: string;
+  grain?: number;
+  grainNoise?: number;
+  grainBlur?: number;
+  grainBlend?: CSSProperties["mixBlendMode"];
+  intensity?: number;
 }) {
   const [ready, setReady] = useState(false);
-  const [liveSpeed, setLiveSpeed] = useState(0);
+  // Boot the shader at its real speed from the very first render — the
+  // ShaderMount stops its RAF whenever speed is 0 and doesn't reliably
+  // restart on a 0→n hand-off, so starting at 0 leaves the gradient
+  // frozen until an unrelated re-render kicks it. Reduced-motion drops
+  // it back to 0 in the effect below.
+  const [liveSpeed, setLiveSpeed] = useState(speed);
 
   useEffect(() => {
     setReady(true);
-    if (!prefersReducedMotion()) setLiveSpeed(speed);
+    setLiveSpeed(prefersReducedMotion() ? 0 : speed);
   }, [speed]);
 
   return (
@@ -41,22 +70,27 @@ export default function HeatShaderBackground({
       } ${className}`}
     >
       <GrainGradient
-        colorBack="#0E0A16"
-        colors={["#0E0A16", "#0E0A16", "#6E2BA8", "#C4408F", "#FF7A2F", "#FFD9A8"]}
+        colorBack={colorBack}
+        colors={[colorDark, colorDark, "#C489E8", "#FF5A12", "#FF9A4E", "#FFF1DC"]}
         shape={shape}
         softness={0.9}
-        intensity={0.3}
-        noise={0.3}
+        intensity={intensity}
+        noise={grainNoise}
         speed={liveSpeed}
         scale={0.65}
         fit="cover"
-        // extra blur melts any remaining band edges into pure glow
-        style={{ width: "100%", height: "100%", filter: "blur(24px)" }}
+        // blur melts band edges into pure glow — lower grainBlur keeps
+        // the shader's grain crisp instead of smearing it away
+        style={{ width: "100%", height: "100%", filter: `blur(${grainBlur}px)` }}
       />
       {/* the shader's own grain is blurred away with the field — this
           layer is the grain that actually lives (steps-looped, never
           stops), clipped to the hero by the wrapper */}
-      <div aria-hidden="true" className="grain-live opacity-40" />
+      <div
+        aria-hidden="true"
+        className="grain-live"
+        style={{ opacity: grain, mixBlendMode: grainBlend }}
+      />
     </div>
   );
 }

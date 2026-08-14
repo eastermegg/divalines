@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Monogram } from "@/components/Brand";
 import Countdown from "@/components/Countdown";
 import VinylPlayer from "@/components/VinylPlayer";
-import { SITE } from "@/lib/site";
+import { useDictionary } from "@/lib/i18n/context";
 
 /**
  * Header on the maquette's editorial grid (1512×900 reference):
@@ -14,6 +14,7 @@ import { SITE } from "@/lib/site";
  * Small screens collapse to logo + countdown.
  */
 export default function Header({ releaseDate }: { releaseDate: string }) {
+  const { dict } = useDictionary();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -35,16 +36,16 @@ export default function Header({ releaseDate }: { releaseDate: string }) {
       {/* Logo — monogram, x 29 / y 34 in the maquette */}
       <a
         href="#top"
-        aria-label="Diva Lines — top"
+        aria-label={dict.header.topAria}
         className="absolute top-1/2 left-[17px] -translate-y-1/2 text-cream transition-opacity hover:opacity-80 md:top-[34px] md:left-[29px] md:translate-y-0"
       >
         <Monogram title="Diva Lines" className="h-[26px] w-auto" />
       </a>
 
       {/* Brand block — left-aligned on the hook column (25.6%) */}
-      <div className="absolute top-[25px] left-[25.57%] hidden text-[15.8px] leading-[17.33px] tracking-[-0.19px] text-cream md:block">
-        <p className="font-medium">{SITE.brandLine[0]}</p>
-        <p className="font-light">{SITE.brandLine[1]}</p>
+      <div className="absolute top-[25px] left-[25.57%] hidden text-[13px] leading-[1.15] tracking-[-0.19px] text-cream md:block">
+        <p className="font-medium">{dict.site.brandLine[0]}</p>
+        <p className="font-normal">{dict.site.brandLine[1]}</p>
       </div>
 
       {/* Countdown — left-aligned at exactly 50% */}

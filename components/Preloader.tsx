@@ -2,21 +2,23 @@
 
 import { useGSAP } from "@gsap/react";
 import { useRef } from "react";
-import { Monogram } from "@/components/Brand";
-import WaveArcs from "@/components/originkit/wave-arcs";
+import AccentText from "@/components/AccentText";
+import { Wordmark } from "@/components/Brand";
+import ChromaticWaves from "@/components/originkit/chromatic-waves-custom-style";
 import { gsap } from "@/lib/gsap";
 import {
   introAlreadyPlayed,
   markIntroPlayed,
   prefersReducedMotion,
 } from "@/lib/motion";
-import { SITE } from "@/lib/site";
+import { useDictionary } from "@/lib/i18n/context";
 
 /**
- * Once-per-session entry sequence, ~4s total:
- *   1. neon wave-arcs surface out of the night and keep sweeping
- *   2. the D✦ monogram rises through its mask, brand line settles
- *   3. the counter runs long to 100 — a held beat of pure arcs
+ * Once-per-session entry sequence (validated on /waves), ~4s total:
+ *   1. the chromatic-waves halftone field surfaces out of the night
+ *   2. the "Diva lines" wordmark rises through its mask, the tagline
+ *      settles beneath, both seated on a radial black oval
+ *   3. the big count runs long to 100 — a held beat of pure field
  *   4. the veil clips upward, the hero blooms in
  *
  * Visibility contract: the preloader itself is CSS-hidden unless the
@@ -26,6 +28,7 @@ import { SITE } from "@/lib/site";
  * hides the preloader again — no-JS visitors never see it at all.
  */
 export default function Preloader() {
+  const { dict } = useDictionary();
   const ref = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
@@ -56,24 +59,20 @@ export default function Preloader() {
     gsap.set("[data-title-diva]", { xPercent: -8 });
     gsap.set("[data-title-lines]", { xPercent: 8 });
     gsap.set("[data-hook-line] > span", { yPercent: 110 });
+    gsap.set("[data-pl-logo]", { yPercent: 110 });
+    gsap.set("[data-pl-tag] > span", { autoAlpha: 0, y: 10 });
 
     const tl = gsap.timeline({ onComplete: finish });
 
     tl
-      // 1 — the neon arcs surface out of the night and keep sweeping
-      .to("[data-pl-arcs]", { opacity: 0.45, duration: 1.4, ease: "power2.out" }, 0)
-      // 2 — the monogram rises through its mask
-      .fromTo(
-        "[data-pl-logo]",
-        { yPercent: 110 },
-        { yPercent: 0, duration: 1.0, ease: "power3.out" },
-        0.5,
-      )
-      // 3 — brand line settles beneath, counter runs long
-      .fromTo(
-        "[data-pl-brand] > span",
-        { autoAlpha: 0, y: 8 },
-        { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.16, ease: "power2.out" },
+      // 1 — the halftone field surfaces out of the night
+      .to("[data-pl-field]", { autoAlpha: 1, duration: 1.4, ease: "power2.out" }, 0)
+      // 2 — the wordmark rises through its mask
+      .to("[data-pl-logo]", { yPercent: 0, duration: 1.0, ease: "power3.out" }, 0.5)
+      // 3 — the tagline settles beneath, counter runs long
+      .to(
+        "[data-pl-tag] > span",
+        { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.14, ease: "power2.out" },
         1.1,
       )
       .to(
@@ -83,18 +82,22 @@ export default function Preloader() {
           duration: 2.3,
           ease: "power1.inOut",
           onUpdate() {
-            if (counterEl)
-              counterEl.textContent = String(Math.round(counter.v)).padStart(3, "0");
+            if (counterEl) counterEl.textContent = String(Math.round(counter.v));
           },
         },
         0.3,
       )
       .to("[data-pl-counter]", { color: "#FF5EC4", duration: 0.25 }, 2.6)
-      // …a held beat of pure arcs…
+      // …a held beat of pure field…
       // 4 — exit: the veil dissolves upward
       .to("[data-pl-logo]", { yPercent: -110, duration: 0.5, ease: "power3.in" }, 3.0)
-      .to("[data-pl-brand], [data-pl-counter]", { autoAlpha: 0, duration: 0.35 }, 3.0)
-      .to("[data-pl-arcs]", { opacity: 0, duration: 0.5, ease: "power2.in" }, 3.05)
+      .to("[data-pl-tag], [data-pl-oval]", { autoAlpha: 0, duration: 0.35 }, 3.0)
+      .to(
+        "[data-pl-count]",
+        { yPercent: 30, autoAlpha: 0, duration: 0.45, ease: "power3.in" },
+        3.0,
+      )
+      .to("[data-pl-field]", { autoAlpha: 0, duration: 0.5, ease: "power2.in" }, 3.05)
       .set(ref.current, { pointerEvents: "none" }, 3.15)
       .to(
         ref.current,
@@ -144,43 +147,47 @@ export default function Preloader() {
       aria-hidden="true"
       className="preloader fixed inset-0 z-[100] items-center justify-center bg-night"
     >
-      {/* concentric neon arcs sweeping from below — the brand's wave
-          motif (Originkit wave-arcs). It self-pauses once the preloader
-          is display:none. Dimmed so the monogram stays dominant. */}
-      <div data-pl-arcs className="absolute inset-0 opacity-0">
-        <WaveArcs
-          backgroundColor="#0E0A16"
-          lineColor="#FF5EC4"
-          lineWidth={1}
-          lineCount={60}
-          speed={2.5}
-          glow={6}
-          interactive={false}
+      {/* chromatic-waves halftone field — the saved Originkit `custom-style`
+          preset. It self-pauses once the preloader is display:none. */}
+      <div data-pl-field className="absolute inset-0 opacity-0">
+        <ChromaticWaves />
+      </div>
+
+      {/* top-left lockup: wordmark rising through its mask, tagline beneath,
+          left-aligned and seated on a radial black glow. Sits diagonally
+          opposite the count. */}
+      <div className="absolute top-8 left-8 flex flex-col items-start pr-6 sm:top-10 sm:left-10">
+        <div
+          data-pl-oval
+          className="absolute -inset-x-40 -inset-y-28 bg-[radial-gradient(ellipse_62%_62%_at_28%_42%,rgba(0,0,0,0.9)_0%,rgba(0,0,0,0.55)_48%,transparent_76%)]"
         />
-      </div>
-
-      {/* monogram rising through its mask, centered */}
-      <div className="absolute top-[calc(50%-58px)] left-1/2 h-[92px] -translate-x-1/2 overflow-hidden px-6 pt-[12px]">
-        <div data-pl-logo className="select-none">
-          <Monogram title="Diva Lines" className="h-[68px] w-auto text-cream" />
+        <div className="relative overflow-hidden py-[6px]">
+          <div data-pl-logo className="select-none">
+            <Wordmark title="Diva Lines" className="h-[46px] w-[220px] text-white" />
+          </div>
         </div>
+        <p
+          data-pl-tag
+          className="relative mt-5 max-w-[min(34rem,86vw)] text-left font-display text-[clamp(1.5rem,3.4vw,2.25rem)] leading-[1.08] tracking-[0.02em] text-white italic"
+        >
+          <span className="block">
+            <AccentText text={dict.tagline.line1} />
+          </span>
+          <span className="block">
+            <AccentText text={dict.tagline.line2} />
+          </span>
+        </p>
       </div>
 
-      {/* brand line beneath the monogram */}
-      <p
-        data-pl-brand
-        className="absolute top-[calc(50%+52px)] left-1/2 -translate-x-1/2 text-center text-[11px] leading-relaxed tracking-[0.3em] whitespace-nowrap text-cream/50 uppercase"
-      >
-        <span className="block">{SITE.brandLine[0]}</span>
-        <span className="block">{SITE.brandLine[1]}</span>
-      </p>
-
-      <span
-        data-pl-counter
-        className="absolute right-10 bottom-8 text-xs text-cream/50 tabular-nums"
-      >
-        000
-      </span>
+      {/* big 0 → 100 count, pinned to the opposite (bottom-right) corner */}
+      <div data-pl-count className="absolute right-8 bottom-6 overflow-hidden">
+        <span
+          data-pl-counter
+          className="block font-serif text-[clamp(4.5rem,12vw,9rem)] leading-none text-white/90 italic tabular-nums"
+        >
+          0
+        </span>
+      </div>
     </div>
   );
 }

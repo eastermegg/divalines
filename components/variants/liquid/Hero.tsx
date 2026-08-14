@@ -7,7 +7,7 @@ import DancerSilhouette from "@/components/DancerSilhouette";
 import WaitlistForm from "@/components/WaitlistForm";
 import { gsap } from "@/lib/gsap";
 import { MOTION_OK } from "@/lib/motion";
-import { HERO } from "@/lib/site";
+import { useDictionary } from "@/lib/i18n/context";
 
 /**
  * V2 "Liquid" hero — the heat becomes fluid. Three blurred gradient
@@ -17,6 +17,7 @@ import { HERO } from "@/lib/site";
  * apart on scroll. Reduced motion: everything static, no filter.
  */
 export default function Hero() {
+  const { dict } = useDictionary();
   const ref = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -92,7 +93,7 @@ export default function Hero() {
       data-hero
       className="relative flex min-h-svh flex-col justify-end pb-[clamp(2rem,6vh,4.5rem)]"
     >
-      <h1 className="sr-only">Diva Lines — independ heels dancewear, designed in Paris</h1>
+      <h1 className="sr-only">{dict.hero.sr}</h1>
 
       {/* SVG defs: liquid displacement for the silhouette edge */}
       <svg width="0" height="0" className="absolute" aria-hidden="true">
@@ -150,31 +151,31 @@ export default function Hero() {
       <span
         aria-hidden="true"
         data-title-diva
-        className="text-outline pointer-events-none absolute top-[calc(var(--header-h)+1vh)] left-[-2vw] font-serif text-display italic lowercase select-none"
+        className="text-outline pointer-events-none absolute top-[calc(var(--header-h)+1vh)] left-[-2vw] font-display text-display italic lowercase select-none"
       >
         diva
       </span>
       <span
         aria-hidden="true"
         data-title-lines
-        className="text-outline pointer-events-none absolute top-[38svh] right-[-3vw] font-serif text-display italic lowercase select-none"
+        className="text-outline pointer-events-none absolute top-[38svh] right-[-3vw] font-display text-display italic lowercase select-none"
       >
         lines
       </span>
 
       <div className="container-editorial relative z-10">
         <div data-hero-hook className="max-w-[560px]">
-          {HERO.hook.map((line) => (
+          {dict.hero.hook.map((line) => (
             <span
               key={line}
               data-hook-line
-              className="block overflow-hidden font-serif text-lg leading-snug italic text-cream sm:text-[1.9rem]"
+              className="block overflow-hidden text-lg leading-snug font-medium text-cream sm:text-[1.9rem]"
             >
               <span className="block">{line}</span>
             </span>
           ))}
-          <p data-hook-para className="mt-4 max-w-[44ch] text-sm leading-relaxed text-cream/70">
-            {HERO.paragraph}
+          <p data-hook-para className="mt-4 max-w-[44ch] text-[13px] leading-[1.35] text-cream/70">
+            {dict.hero.paragraph}
           </p>
         </div>
 

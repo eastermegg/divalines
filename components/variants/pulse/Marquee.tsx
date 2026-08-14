@@ -4,14 +4,15 @@ import { useGSAP } from "@gsap/react";
 import { useRef } from "react";
 import { gsap } from "@/lib/gsap";
 import { MOTION_OK } from "@/lib/motion";
-
-const LINE = "you'll feel her before you see her ✦ diva lines ✦ first drop this fall ✦ limited run ✦ ";
+import { useDictionary } from "@/lib/i18n/context";
 
 /**
  * Slim brand marquee between sections (V3). Two identical halves, track
  * loops xPercent 0→-50 seamlessly. Static under reduced motion.
  */
 export default function Marquee() {
+  const { dict } = useDictionary();
+  const LINE = dict.marquee;
   const ref = useRef<HTMLDivElement>(null);
 
   useGSAP(

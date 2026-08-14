@@ -4,8 +4,10 @@ import { useGSAP } from "@gsap/react";
 import { useRef, useState } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { MOTION_OK, prefersReducedMotion } from "@/lib/motion";
-import { COLLECTION } from "@/lib/site";
 import { LookArt } from "./garments";
+import AccentText from "@/components/AccentText";
+import { fill, useDictionary } from "@/lib/i18n/context";
+import { en } from "@/lib/i18n/dictionaries/en";
 
 /**
  * Lookbook turntable — an infinite carousel of looks. Every piece sits
@@ -32,7 +34,10 @@ import { LookArt } from "./garments";
  * scrubber still turns the piece because that motion is user-driven.
  */
 
-const LOOKS = COLLECTION.items;
+/** Look count is structural (identical across locales), so the carousel
+ * geometry reads it from the reference dictionary; the display copy comes
+ * from the active locale via useDictionary() inside the component. */
+const LOOK_COUNT = en.collection.items.length;
 /** Three copies of the line art spread across Z — a flat drawing reads
  * as a card; layered it reads as a wireframe volume once it turns.
  * Side ghosts collapse to the single front layer (flat, no doubling). */
@@ -43,7 +48,7 @@ const SLOT_X = 38; // % of stage width per carousel step
 
 /** Signed shortest offset of look i from the active one, in −2…+2. */
 const slotOf = (i: number, active: number) =>
-  ((((i - active) % LOOKS.length) + LOOKS.length + 2) % LOOKS.length) - 2;
+  ((((i - active) % LOOK_COUNT) + LOOK_COUNT + 2) % LOOK_COUNT) - 2;
 
 const slotProps = (slot: number) => ({
   // x:0 clears the px offset GSAP parses from the SSR inline transform —
@@ -58,6 +63,9 @@ const layerOpacity = (slot: number, depth: number) =>
   depth === 0 ? (slot === 0 ? 0.95 : 1) : slot === 0 ? 0.3 : 0;
 
 export default function LookViewer() {
+  const { dict } = useDictionary();
+  const COLLECTION = dict.collection;
+  const LOOKS = COLLECTION.items;
   const sectionRef = useRef<HTMLElement>(null);
   const platterRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLHeadingElement>(null);
@@ -346,9 +354,9 @@ export default function LookViewer() {
           </p>
           <h2
             id="collection-title"
-            className="mt-4 font-serif text-manifesto text-cream italic"
+            className="mt-4 font-display text-manifesto text-cream italic"
           >
-            {COLLECTION.title}
+            <AccentText text={COLLECTION.title} />
           </h2>
           <p className="mt-3 text-sm text-cream/60">{COLLECTION.sub}</p>
         </div>
@@ -361,12 +369,16 @@ export default function LookViewer() {
           </p>
           <h3
             ref={nameRef}
-            className="mt-2 font-serif text-[clamp(2.5rem,6.5vw,5.5rem)] leading-none text-cream italic"
+            className="mt-2 font-display text-[clamp(2.5rem,6.5vw,5.5rem)] leading-none text-cream italic"
           >
             {look.name}
           </h3>
           <p className="sr-only" aria-live="polite">
-            look {active + 1} of {LOOKS.length}: {look.name}
+            {fill(dict.look.srCount, {
+              n: active + 1,
+              total: LOOKS.length,
+              name: look.name,
+            })}
           </p>
 
           <div className="mt-6 flex items-center gap-5">
@@ -378,7 +390,7 @@ export default function LookViewer() {
               ref={stripRef}
               role="slider"
               tabIndex={0}
-              aria-label="Turntable angle"
+              aria-label={dict.look.turntableAngle}
               aria-valuemin={0}
               aria-valuemax={359}
               aria-valuenow={0}
@@ -485,7 +497,7 @@ export default function LookViewer() {
               onClick={() => go(-1)}
               onMouseEnter={() => glow(prevI, true)}
               onMouseLeave={() => glow(prevI, false)}
-              aria-label={`Previous look — ${LOOKS[prevI].name}`}
+              aria-label={fill(dict.look.prev, { name: LOOKS[prevI].name })}
               className="absolute top-1/2 left-0 z-10 h-[60%] w-[18%] -translate-y-1/2 cursor-w-resize"
             />
             <button
@@ -493,7 +505,7 @@ export default function LookViewer() {
               onClick={() => go(1)}
               onMouseEnter={() => glow(nextI, true)}
               onMouseLeave={() => glow(nextI, false)}
-              aria-label={`Next look — ${LOOKS[nextI].name}`}
+              aria-label={fill(dict.look.next, { name: LOOKS[nextI].name })}
               className="absolute top-1/2 right-0 z-10 h-[60%] w-[18%] -translate-y-1/2 cursor-e-resize"
             />
 
