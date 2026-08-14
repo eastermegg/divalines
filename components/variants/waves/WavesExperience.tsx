@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Wordmark } from "@/components/Brand";
 import ChromaticWaves from "@/components/originkit/chromatic-waves-custom-style";
 import WavesPreloader from "@/components/variants/waves/Preloader";
@@ -8,12 +7,9 @@ import AccentText from "@/components/AccentText";
 
 /**
  * Client shell for the "/waves" preloader proposal. The halftone field +
- * centered lockup live here and are unveiled by <WavesPreloader/>; "Replay"
- * remounts the preloader (via key) to re-run the intro without a reload.
+ * top-left lockup live here and are unveiled by <WavesPreloader/>.
  */
 export default function WavesExperience() {
-  const [replay, setReplay] = useState(0);
-
   return (
     <div className="relative min-h-dvh overflow-hidden bg-night text-cream">
       {/* persistent chromatic-waves field (saved `custom-style` preset),
@@ -46,15 +42,7 @@ export default function WavesExperience() {
         </div>
       </main>
 
-      <button
-        type="button"
-        onClick={() => setReplay((n) => n + 1)}
-        className="fixed right-6 bottom-6 z-[110] rounded-pill border border-cream/20 bg-night/50 px-4 py-2 text-[11px] tracking-[0.2em] text-cream/70 uppercase backdrop-blur transition-colors hover:border-neon-pink/60 hover:text-cream"
-      >
-        Replay intro
-      </button>
-
-      <WavesPreloader key={replay} />
+      <WavesPreloader />
     </div>
   );
 }
