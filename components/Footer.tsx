@@ -26,13 +26,14 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col gap-6 text-xs text-night/70 sm:flex-row sm:items-end sm:justify-between">
-          <div className="space-y-1 tracking-[0.14em] uppercase">
-            {dict.site.brandLine.map((line) => (
-              <p key={line}>{line}</p>
-            ))}
-          </div>
+        {/* Full wordmark signature — solid black fill, full-bleed (negative
+            margins cancel the container padding) and widened so it bleeds off
+            the left/right only; top/bottom stay intact. */}
+        <div className="mt-16 -mx-[17px] flex justify-center overflow-hidden md:-mr-[26px] md:-ml-[29px]">
+          <Wordmark className="w-[112%] max-w-none shrink-0 text-night" />
+        </div>
 
+        <div className="mt-16 flex flex-col gap-6 text-sm text-night/70 sm:flex-row sm:items-end sm:justify-between">
           <nav
             aria-label={dict.footer.socialLegalAria}
             className="flex flex-nowrap items-center gap-6 whitespace-nowrap"
@@ -58,16 +59,6 @@ export default function Footer() {
           </nav>
 
           <p>© 2026 {SITE.name}. {dict.footer.rights}</p>
-        </div>
-
-        {/* Full wordmark signature — 1px outline, full-bleed (negative margins
-            cancel the container padding) and widened so it bleeds off the
-            left/right only; top/bottom stay intact. */}
-        <div className="mt-16 -mx-[17px] flex justify-center overflow-hidden md:-mr-[26px] md:-ml-[29px]">
-          <Wordmark
-            outlined
-            className="w-[112%] max-w-none shrink-0 text-night/30"
-          />
         </div>
       </div>
     </footer>

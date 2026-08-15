@@ -38,7 +38,7 @@ export default function LanguageSwitcher({
             onClick={() => {
               document.cookie = `NEXT_LOCALE=${loc};path=/;max-age=31536000;samesite=lax`;
             }}
-            className={`uppercase tracking-[0.14em] transition-colors ${
+            className={`inline-block py-1 uppercase tracking-[0.14em] transition-colors ${
               loc === locale ? "text-night" : "hover:text-night"
             }`}
           >

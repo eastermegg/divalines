@@ -9,11 +9,32 @@
  * are filled at render time via lib/i18n/context#fill.
  */
 
-const MANIFESTO_PHRASE =
-  "She doesn't wait To Be Chosen. she chooses *herself*. " +
-  "She Doesn't Follow The Rhythm. she is the *rhythm*. " +
-  "Soft. Don't Mistake It For Weakness. " +
-  "You Don't Become Her. you remember you are *her*.";
+// The manifesto in its three scroll acts — the overheard reproaches, the
+// answer, the tagline. *asterisks* mark the Migra accent words. `manifesto`
+// keeps a flat, flowing copy for a11y / the other variants.
+// *asterisks* mark the ONE Migra-accent word (the quotes + tagline are
+// rendered mixed-face via AccentText). [[double brackets]] mark the body's
+// colour highlights — whole punches that flash in on reveal.
+const MANIFESTO_QUOTES = [
+  "Stop being such a *diva*.",
+  "Who does she think she *is*.",
+  "She's a *difficult* one, that girl.",
+  "Don't *upset* her, she's a diva.",
+];
+const MANIFESTO_BODY =
+  "[[Diva]]. We've all been called it. The demanding one. The dramatic one. The one who thinks she's something. [[Too much.]] " +
+  "And for heels, the same trial. As if a body in motion had to be addressing someone. Who are you doing this for. [[No one.]] It's for us. For the three seconds when the count drops away and nothing thinks. " +
+  "At Divalines, we keep the word. We drop the reproach. A diva is a whole [[woman]]. Soft and powerful. Vulnerable and sovereign. Both at once. She takes her space, without apologising. She walks in, and the room knows. [[You feel her before you see her.]] " +
+  "It isn't decided in the mirror. It's felt inside. It's the second before the first count. It's the head that lifts and doesn't come back down. " +
+  "Diva isn't a flaw. It's [[a state of mind]]. We don't make divas. We dress the ones who already are.";
+const MANIFESTO_TAGLINE = "be the *diva* you already are.";
+const MANIFESTO_TEXT = [
+  MANIFESTO_QUOTES.map((q) => `« ${q} »`).join(" "),
+  MANIFESTO_BODY,
+  MANIFESTO_TAGLINE,
+]
+  .join(" ")
+  .replace(/\[\[|\]\]/g, ""); // flat a11y copy carries no highlight markers
 
 export const en = {
   site: {
@@ -33,12 +54,17 @@ export const en = {
     sr: "Diva Lines — independ heels dancewear, designed in Paris",
   },
 
-  manifesto: `${MANIFESTO_PHRASE} ${MANIFESTO_PHRASE}`,
+  manifesto: MANIFESTO_TEXT,
+  manifestoParts: {
+    quotes: MANIFESTO_QUOTES,
+    body: MANIFESTO_BODY,
+    tagline: MANIFESTO_TAGLINE,
+  },
   manifestoLabel: "the manifesto",
 
   collection: {
     label: "The first line — fall 2026",
-    title: "five pieces. cut for the *floor*.",
+    title: "four pieces. cut for the *floor*.",
     sub: "Sketched until the drop. The waitlist sees them shot first.",
     hint: "drag to spin",
     revealed: "— revealed at the drop",
@@ -131,7 +157,9 @@ export const en = {
   },
 
   footer: {
+    eyebrow: "fall 2026 — limited run",
     joinLine: "join the *first* line.",
+    sub: "the waitlist sees her before anyone else — and the line is short.",
     socialLegalAria: "Social and legal",
     privacy: "Privacy policy",
     legal: "Legal notice",
@@ -165,9 +193,9 @@ export const en = {
     sectionAria: "The first line — fall 2026",
     controls: "scroll · drag · arrows",
     plates: [
-      { name: "the bodysuit", alt: "The bodysuit, open back" },
-      { name: "the wrap", alt: "The wrap top, tied front" },
-      { name: "the halter", alt: "The halter top" },
+      { name: "joséphine", alt: "The bodysuit, open back" },
+      { name: "grace", alt: "The wrap top, tied front" },
+      { name: "tina", alt: "The halter top" },
     ],
   },
 
@@ -198,17 +226,30 @@ export const en = {
   privacy: {
     back: "Diva Lines",
     title: "Privacy policy",
+    updated: "Last updated: [TO COMPLETE — e.g. 15 August 2026].",
+    intro:
+      "This policy explains how {name} collects and processes your personal data when you join the waitlist, in accordance with the General Data Protection Regulation (GDPR) and the French Data Protection Act.",
+    controller: {
+      h: "Data controller",
+      before:
+        "The data controller is [TO COMPLETE — legal name], a [legal form] with share capital of €[amount], registered with the [city] Trade and Companies Register under number [company no.], with registered office at [full address]. For any question about your data, write to ",
+      after: ".",
+    },
     collect: {
       h: "What we collect",
       p: "When you join the waitlist we store your email address, the date of signup, your browser language, optional campaign parameters (UTM), and a salted hash of your IP address used only for abuse prevention. Your raw IP address is never stored.",
     },
     why: {
       h: "Why we collect it",
-      p: "Solely to send you updates about the {name} launch. Legal basis: your explicit consent, given when you submit the form. No advertising, no profiling, no sale of data. Ever.",
+      p: "Solely to send you updates about the {name} launch. Legal basis: your explicit consent (GDPR Article 6(1)(a)), given when you submit the form. No third-party advertising, no profiling, no sale of data. Ever.",
     },
     where: {
       h: "Where it lives",
-      p: "Data is stored with our processors Supabase (database, EU-hosted project) and mirrored to Notion for the team's consultation. Both act under data-processing agreements.",
+      p: "Data is stored with our processors Supabase (database, EU-hosted project) and mirrored to Notion for the team's consultation. Both act under data-processing agreements (DPAs).",
+    },
+    transfers: {
+      h: "Transfers outside the European Union",
+      p: "Some of your data is mirrored to Notion Labs, Inc., located in the United States. This transfer outside the EU is governed by the Standard Contractual Clauses adopted by the European Commission, ensuring an equivalent level of protection. The Supabase database itself is hosted on servers located within the European Union.",
     },
     howLong: {
       h: "How long we keep it",
@@ -217,17 +258,26 @@ export const en = {
     rights: {
       h: "Your rights",
       before:
-        "Under the GDPR you can access, rectify, export or erase your data, and withdraw consent at any time. Write to ",
+        "Under the GDPR you have the right to access, rectify, erase, restrict, object to and port your data, and to withdraw consent at any time without affecting the lawfulness of processing carried out beforehand. To exercise these rights, write to ",
       after:
         " — we answer within 30 days. You may also lodge a complaint with the CNIL (cnil.fr).",
     },
     cookies: {
       h: "Cookies",
-      p: "This site sets no tracking cookies. A single sessionStorage flag remembers whether you've seen the intro animation; it never leaves your browser.",
+      p: "This site sets no tracking or analytics cookies. A single sessionStorage flag remembers whether you've seen the intro animation; it never leaves your browser and requires no prior consent.",
     },
     legal: {
       h: "Legal notice",
-      body: "Publication director and hosting details will be completed before commercial launch. Contact:",
+      editorH: "Site publisher",
+      editorBefore:
+        "[TO COMPLETE — legal name], a [legal form] with share capital of €[amount] — company no. [number] — VAT [number] — registered office: [full address]. Publication director: [TO COMPLETE — name]. Contact: ",
+      editorAfter: ".",
+      hostH: "Host",
+      hostBody:
+        "This site is hosted by Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA — vercel.com. [To confirm depending on the host chosen.]",
+      ipH: "Intellectual property",
+      ipBody:
+        "All content on this site (brand, logotype, text, visuals, graphic design and code) is the exclusive property of [TO COMPLETE — legal name] or its partners. Any reproduction, representation or use, in whole or in part, without prior written authorisation is prohibited.",
     },
   },
 };

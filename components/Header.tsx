@@ -14,7 +14,7 @@ import { useDictionary } from "@/lib/i18n/context";
  * Small screens collapse to logo + countdown.
  */
 export default function Header({ releaseDate }: { releaseDate: string }) {
-  const { dict } = useDictionary();
+  const { dict, locale } = useDictionary();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -33,9 +33,10 @@ export default function Header({ releaseDate }: { releaseDate: string }) {
           : "bg-transparent"
       }`}
     >
-      {/* Logo — monogram, x 29 / y 34 in the maquette */}
+      {/* Logo — monogram, x 29 / y 34 in the maquette. Always routes to
+          the locale home, so it works from subpages (/privacy, /wall). */}
       <a
-        href="#top"
+        href={`/${locale}`}
         aria-label={dict.header.topAria}
         className="absolute top-1/2 left-[17px] -translate-y-1/2 text-cream transition-opacity hover:opacity-80 md:top-[34px] md:left-[29px] md:translate-y-0"
       >

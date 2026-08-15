@@ -57,9 +57,13 @@ function loadImage(src: string): Promise<HTMLImageElement> {
  * frames key near-black by luminance. RGB is premultiplied toward the
  * removed alpha so soft edges fade to nothing instead of fringing.
  */
-async function keyBackground(src: string, mode: Silo["bg"]): Promise<string> {
+async function keyBackground(
+  src: string,
+  mode: Silo["bg"],
+  maxEdge: number = MAX_EDGE,
+): Promise<string> {
   const img = await loadImage(src);
-  const scale = Math.min(1, MAX_EDGE / Math.max(img.naturalWidth, img.naturalHeight));
+  const scale = Math.min(1, maxEdge / Math.max(img.naturalWidth, img.naturalHeight));
   const w = Math.max(1, Math.round(img.naturalWidth * scale));
   const h = Math.max(1, Math.round(img.naturalHeight * scale));
   const canvas = document.createElement("canvas");
@@ -111,6 +115,11 @@ export default function DitherCycler() {
   // motion. Resolved in an effect to avoid an SSR/client mismatch.
   const [ambient, setAmbient] = useState(false);
   useEffect(() => setAmbient(!prefersReducedMotion()), []);
+  // Touch devices have no cursor to resolve the dither, and the WebGL is
+  // heavy there — so on coarse pointers we drop the shader and just
+  // cross-dissolve the plain silhouette cutouts (resolved in the keying
+  // effect so it also lightens the processing).
+  const [plain, setPlain] = useState(false);
   // Two stacked layers we cross-dissolve between; each holds an index.
   // The hidden layer sits pre-loaded on the NEXT frame so the one that
   // fades in has already decoded — no placeholder flash mid-dissolve.
@@ -128,12 +137,16 @@ export default function DitherCycler() {
   useEffect(() => {
     let alive = true;
     const made: string[] = [];
+    // Coarse pointer (touch) → plain silhouettes, keyed at a smaller size.
+    const coarse = window.matchMedia("(pointer: coarse)").matches;
+    setPlain(coarse);
+    const edge = coarse ? 1100 : MAX_EDGE;
     (async () => {
       for (let i = 0; i < SILHOUETTES.length; i++) {
         const s = SILHOUETTES[i];
         let url: string;
         try {
-          url = await keyBackground(s.src, s.bg);
+          url = await keyBackground(s.src, s.bg, edge);
         } catch {
           url = s.src; // fall back to the raw frame rather than dropping it
         }
@@ -213,27 +226,44 @@ export default function DitherCycler() {
               pointerEvents: isFront ? "auto" : "none",
             }}
           >
-            <DitherReveal
-              key={url}
-              image={url}
-              fit="cover"
-              focusY={50}
-              ditherStyle="bayer8"
-              dotSize={3}
-              revealRadius={130}
-              revealSoftness={60}
-              wave
-              waveSpeed={30}
-              waveDensity={18}
-              // Faint self-driving reveal on the lit layer so the effect
-              // hints at itself; the real cursor still takes over at full
-              // strength. Skipped under reduced-motion.
-              autoReveal={isFront && ambient}
-              autoRevealStrength={0.75}
-              // Only the visible layer renders; the hidden one freezes on
-              // its last frame (it's opacity-0 anyway) — halves GPU load.
-              paused={!isFront}
-            />
+            {plain ? (
+              // Touch: plain cutout, feet pinned to the bottom (brand rule:
+              // never crop the feet — object-bottom mirrors the shader's
+              // focusY=100). The random cross-dissolve above still plays.
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={url}
+                alt=""
+                className="h-full w-full object-cover object-bottom"
+              />
+            ) : (
+              <DitherReveal
+                key={url}
+                image={url}
+                fit="cover"
+                // Pin the image's BOTTOM edge (the feet). Brand rule: never
+                // crop the feet — with cover, focusY=100 keeps the bottom of
+                // every frame no matter its aspect, so any vertical trim eats
+                // headroom instead. The frame ratio (see Hero) hugs the source
+                // so that trim stays tiny.
+                focusY={100}
+                ditherStyle="bayer8"
+                dotSize={3}
+                revealRadius={130}
+                revealSoftness={60}
+                wave
+                waveSpeed={30}
+                waveDensity={18}
+                // Faint self-driving reveal on the lit layer so the effect
+                // hints at itself; the real cursor still takes over at full
+                // strength. Skipped under reduced-motion.
+                autoReveal={isFront && ambient}
+                autoRevealStrength={0.75}
+                // Only the visible layer renders; the hidden one freezes on
+                // its last frame (it's opacity-0 anyway) — halves GPU load.
+                paused={!isFront}
+              />
+            )}
           </div>
         );
       })}

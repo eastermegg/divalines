@@ -46,6 +46,15 @@ export default function HeatShaderBackground({
   grainBlend?: CSSProperties["mixBlendMode"];
   intensity?: number;
 }) {
+  // Paper Shaders' colour parser only understands hex/rgb(a)/hsl(a) — the
+  // CSS keyword "transparent" throws "Unsupported color format". Translate
+  // it to a fully-transparent hex8 so callers can still pass "transparent"
+  // to let the page backdrop show through.
+  const toShaderColor = (c: string) =>
+    c === "transparent" ? "#00000000" : c;
+  const backColor = toShaderColor(colorBack);
+  const darkColor = toShaderColor(colorDark);
+
   const [ready, setReady] = useState(false);
   // Boot the shader at its real speed from the very first render — the
   // ShaderMount stops its RAF whenever speed is 0 and doesn't reliably
@@ -70,8 +79,8 @@ export default function HeatShaderBackground({
       } ${className}`}
     >
       <GrainGradient
-        colorBack={colorBack}
-        colors={[colorDark, colorDark, "#C489E8", "#FF5A12", "#FF9A4E", "#FFF1DC"]}
+        colorBack={backColor}
+        colors={[darkColor, darkColor, "#C489E8", "#FF5A12", "#FF9A4E", "#FFF1DC"]}
         shape={shape}
         softness={0.9}
         intensity={intensity}

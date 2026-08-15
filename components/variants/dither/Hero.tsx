@@ -86,40 +86,76 @@ export default function Hero() {
       <div
         aria-hidden="true"
         data-hero-gradient
-        className="absolute inset-0 origin-bottom opacity-80"
+        className="absolute inset-0 origin-bottom opacity-50"
         style={{
           background:
             "radial-gradient(52% 48% at 108% -6%, #FFF1DC 0%, #FF9A4E 16%, #FF5A12 32%, #C489E8 60%, transparent 100%), radial-gradient(56% 52% at -8% 106%, #FFF1DC 0%, #FF9A4E 16%, #FF5A12 32%, #C489E8 60%, transparent 100%), transparent",
         }}
       >
         <HeatShaderBackground
-          colorBack="transparent"
-          colorDark="transparent"
+          // Pin the field/dark tones to the page backdrop (#07050b), which
+          // sits a couple stops below --color-night — otherwise the hero
+          // reads lighter than the rest of the page.
+          colorBack="#07050b"
+          colorDark="#07050b"
+          intensity={0.14}
           grain={0.95}
           grainNoise={0.9}
           grainBlur={6}
           grainBlend="soft-light"
         />
       </div>
+      {/* Bottom fade — dissolves the heat field into the page backdrop
+          (#07050b) at the section's bottom edge so the hero melts into the
+          next section instead of ending on a hard seam. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[30vh]"
+        style={{
+          background: "linear-gradient(to bottom, rgba(7,5,11,0) 0%, #07050b 100%)",
+        }}
+      />
       {/* Night veil — darkens the heat as you scroll away */}
       <div aria-hidden="true" data-hero-veil className="absolute inset-0 bg-night opacity-0" />
 
       {/* Silhouette in the haze — a set of rim-lit dancer photographs
           cross-dissolving at random through the Dither Reveal shader:
           each reads as an ordered-dither halftone at rest and resolves
-          to full colour under the cursor. The frame runs BIG — up to 90svh
-          tall (the `min(…,110vw)` guard keeps her from overflowing width on
-          narrow/portrait screens) — and a 9:10 ratio slightly wider than
-          the 0.806 source so `cover` zooms the figure in rather than
-          leaving a thin centred column. z-[5]: she stands IN FRONT of the
-          display letterforms; pinned to the frame (no scroll parallax).
-          Per-frame blend (lighten for black-backed, multiply for
+          to full colour under the cursor. On desktop the frame runs BIG —
+          up to 86svh tall, bottom-anchored (the `min(…,104vw)` guard keeps
+          her from overflowing width). On MOBILE the maquette's big
+          bottom-anchored figure would bury her lower body behind the stacked
+          hook + form, so she reflows to the UPPER band (top-anchored, 54svh)
+          with a clear floor gap above the copy. BRAND RULE: never crop the
+          feet, always
+          keep floor beneath the heels. So the ratio hugs the 0.806 source
+          (4:5 ≈ 0.8, a hair narrower) → `cover` barely trims the sides and
+          keeps the FULL height (head→feet), and the frame is lifted off the
+          viewport bottom to leave a band of floor under her. Paired with
+          `focusY=100` in DitherCycler, which pins the image's bottom edge
+          (the feet) so no frame ever clips them. z-[5]: she stands IN FRONT
+          of the display letterforms; pinned to the frame (no scroll
+          parallax). Per-frame blend (lighten for black-backed, multiply for
           white-backed) melts each backdrop into the dark page — see
           DitherCycler. */}
+      {/* Black backdrop behind HER — a soft, blurred radial ellipse that
+          seats the rim-lit figure against black so she reads, while the
+          feathered edges melt back into the heat gradient (no hard box).
+          Sits at z-[4]: under the silhouette (z-[5]), over the gradient. */}
+      <div
+        aria-hidden="true"
+        data-hero-silhouette-backdrop
+        className="pointer-events-none absolute top-[-2svh] left-1/2 z-[4] h-[64svh] w-[min(62svh,92vw)] -translate-x-1/2 lg:top-auto lg:bottom-0 lg:h-[94svh] lg:w-[min(80svh,94vw)]"
+        style={{
+          background:
+            "radial-gradient(52% 56% at 50% 44%, rgba(0,0,0,0.96) 0%, rgba(0,0,0,0.82) 42%, rgba(0,0,0,0) 76%)",
+          filter: "blur(30px)",
+        }}
+      />
       <div
         data-hero-silhouette
-        className="absolute bottom-0 left-1/2 z-[5] h-[min(90svh,110vw)] -translate-x-1/2 opacity-95"
-        style={{ aspectRatio: "9 / 10" }}
+        className="absolute top-[4svh] left-1/2 z-[5] h-[54svh] -translate-x-1/2 opacity-95 lg:top-auto lg:bottom-[clamp(1.25rem,3.5vh,2.75rem)] lg:h-[min(86svh,104vw)]"
+        style={{ aspectRatio: "4 / 5" }}
       >
         <DitherCycler />
       </div>
