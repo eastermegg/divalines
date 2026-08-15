@@ -219,6 +219,16 @@
   }
 }
 
+/* On phones the feathered CTA glow bleeds too wide and reads loud —
+   tighten it so the button feels intentional, not template-y. */
+@media (max-width: 640px) {
+  .cta-heat::before {
+    inset: -4px;
+    filter: blur(11px);
+    opacity: 0.5;
+  }
+}
+
 /* Diagonal sheen sweeping across the CTA on hover (spec §3.4) */
 @utility cta-sheen {
   position: relative;

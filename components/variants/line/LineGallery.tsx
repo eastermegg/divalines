@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { useGSAP } from "@gsap/react";
 import AccentText from "@/components/AccentText";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useDictionary } from "@/lib/i18n/context";
 import { prefersReducedMotion } from "@/lib/motion";
+import { RELEASE_DATE_FALLBACK } from "@/lib/site";
+import VeiledPlate, { VEIL_MIN_BLUR, useVeilBlur } from "@/components/variants/line/veil";
 
 /**
  * "The first line" — the collection section as a scroll-scrubbed stack
@@ -47,10 +49,13 @@ const DEPTH = 340;
 
 export default function LineGallery({
   interactive = false,
+  releaseDate = RELEASE_DATE_FALLBACK,
 }: {
   /** Standalone route passes true — only toggles the controls hint now;
    *  both paths scrub from scroll, so the behaviour is identical. */
   interactive?: boolean;
+  /** ISO drop date — drives how thick the veil sits (see VEIL_* above). */
+  releaseDate?: string;
 }) {
   const { dict } = useDictionary();
   const LINE: LinePlate[] = PLATE_SRCS.map((src, i) => ({
@@ -65,6 +70,15 @@ export default function LineGallery({
   const [reduced, setReduced] = useState(true);
   // Which piece is centred — set by the scrub, not a timer.
   const [caption, setCaption] = useState(0);
+
+  // Veil thickness (px of blur), driven by the countdown; hover eases it
+  // a touch more ("presque, mais pas encore").
+  const veilBlur = useVeilBlur(releaseDate);
+  const [hovered, setHovered] = useState(false);
+  // On hover, drop ~45% of the veil (never below a soft floor) — a tease.
+  const effectiveBlur = hovered
+    ? Math.max(VEIL_MIN_BLUR * 0.6, veilBlur * 0.55)
+    : veilBlur;
 
   const sectionRef = useRef<HTMLElement>(null);
   const plateRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -139,9 +153,16 @@ export default function LineGallery({
         className="pointer-events-none absolute bottom-[-15%] left-1/2 h-[55%] w-[120%] -translate-x-1/2 rounded-[100%] bg-heat-orange/12 blur-[120px]"
       />
 
-      {/* the scrubbed plate stack (or a static contact sheet at rest) */}
+      {/* the scrubbed plate stack (or a static contact sheet at rest).
+          `--veil-blur` is set on the container so every plate reads the
+          same thickness; hover on the stack eases it down a touch. */}
       {mounted && !reduced ? (
-        <div className="absolute inset-0 [perspective:1200px]">
+        <div
+          className="absolute inset-0 [perspective:1200px]"
+          style={{ "--veil-blur": `${effectiveBlur}px` } as CSSProperties}
+          onPointerEnter={() => setHovered(true)}
+          onPointerLeave={() => setHovered(false)}
+        >
           {LINE.map((item, i) => (
             <div
               key={item.src}
@@ -151,48 +172,47 @@ export default function LineGallery({
                 ref={(el) => {
                   plateRefs.current[i] = el;
                 }}
-                className="relative aspect-[4/5] h-[68%] max-h-[600px] will-change-transform"
+                className="relative aspect-[4/5] h-[68%] max-h-[600px] w-auto max-w-[86vw] will-change-transform"
                 style={{
                   opacity: i === 0 ? 1 : 0,
                   visibility: i === 0 ? "visible" : "hidden",
                   zIndex: i === 0 ? 200 : 0,
                 }}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={item.src}
-                  alt={item.alt ?? item.name}
-                  className="h-full w-full rounded-sm object-cover shadow-[0_30px_90px_rgba(0,0,0,0.55)]"
-                />
+                <VeiledPlate src={item.src} alt={item.alt ?? item.name} />
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="absolute inset-0 grid grid-cols-2 gap-2 p-2 sm:grid-cols-3">
+        <div
+          className="absolute inset-0 grid grid-cols-2 gap-2 p-2 sm:grid-cols-3"
+          style={{ "--veil-blur": `${veilBlur}px` } as CSSProperties}
+        >
           {LINE.map((item) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              key={item.src}
-              src={item.src}
-              alt={item.alt ?? item.name}
-              className="h-full w-full rounded-sm object-cover"
-            />
+            <div key={item.src} className="relative aspect-[4/5]">
+              <VeiledPlate src={item.src} alt={item.alt ?? item.name} />
+            </div>
           ))}
         </div>
       )}
 
       {/* editorial overlay — sits above the stack, never eats pointers */}
-      <div className="pointer-events-none absolute inset-0 p-6 sm:p-10">
-        <header className="max-w-xl">
-          <p className="text-[11px] tracking-[0.3em] text-cream/55 uppercase">
-            {dict.collection.label}
-          </p>
-          <h2 className="mt-4 font-display text-[clamp(2rem,5.5vw,4.5rem)] leading-[1.05] text-cream italic">
-            <AccentText text={dict.collection.title} />
-          </h2>
-          <p className="mt-3 max-w-sm text-sm text-cream/60">{dict.collection.sub}</p>
-        </header>
+      <div className="pointer-events-none absolute inset-0">
+        {/* header rides the same editorial grid as the manifesto
+            (container-editorial + centred 68rem), so their left edges line
+            up as the section scrolls in beneath it. */}
+        <div className="container-editorial pt-6 sm:pt-10">
+          <header className="mx-auto max-w-[68rem]">
+            <p className="text-[11px] tracking-[0.3em] text-cream/55 uppercase">
+              {dict.collection.label}
+            </p>
+            <h2 className="mt-4 font-display text-[clamp(2rem,5.5vw,4.5rem)] leading-[1.05] text-cream italic">
+              <AccentText text={dict.collection.title} />
+            </h2>
+            <p className="mt-3 max-w-sm text-sm text-cream/60">{dict.collection.sub}</p>
+          </header>
+        </div>
 
         {/* piece caption — floats in the right gutter, level with the plate,
             on wide screens; tucks bottom-left on narrow screens where the

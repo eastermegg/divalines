@@ -228,7 +228,7 @@ export default function WaitlistForm({
         <p
           ref={successRef}
           data-waitlist-success
-          className={`${surface} ${successText} flex h-[54px] w-full items-center justify-center rounded-pill px-8 font-serif text-base italic sm:h-[68px]`}
+          className={`${surface} ${successText} flex h-[54px] w-full items-center justify-center rounded-[16px] px-8 font-serif text-base italic sm:h-[68px] sm:rounded-pill`}
           role="status"
         >
           {FORM.success}
@@ -243,7 +243,7 @@ export default function WaitlistForm({
       <form
         onSubmit={onSubmit}
         noValidate
-        className={`${surface} flex flex-col gap-2 rounded-[28px] p-[7px] sm:h-[68px] sm:flex-row sm:items-center sm:rounded-pill`}
+        className={`${surface} flex flex-col gap-1.5 rounded-[20px] p-1.5 sm:h-[68px] sm:flex-row sm:items-center sm:gap-2 sm:rounded-pill sm:p-[7px]`}
       >
         <label htmlFor={inputId} className="sr-only">
           {dict.waitlist.emailLabel}
@@ -257,7 +257,7 @@ export default function WaitlistForm({
           placeholder={FORM.placeholder}
           aria-invalid={status === "error" || undefined}
           aria-describedby={status === "error" ? errorId : undefined}
-          className={`h-[54px] min-w-0 flex-1 rounded-pill bg-transparent px-[22px] text-base ${inputText} focus-visible:outline-offset-[-2px]`}
+          className={`h-[54px] min-w-0 rounded-[14px] bg-transparent px-5 text-[16px] ${inputText} focus-visible:outline-offset-[-2px] sm:h-[54px] sm:flex-1 sm:rounded-pill sm:px-[22px] sm:text-base`}
         />
         {/* Honeypot — invisible to humans, tempting to bots */}
         <input
@@ -272,7 +272,7 @@ export default function WaitlistForm({
           type="submit"
           data-waitlist-cta
           disabled={status === "loading"}
-          className={`${ctaClass} h-[54px] shrink-0 cursor-pointer rounded-pill px-7 text-base font-medium transition-[background-color,opacity] disabled:opacity-70`}
+          className={`${ctaClass} h-[54px] shrink-0 cursor-pointer rounded-[14px] px-7 text-base font-medium transition-[background-color,opacity] disabled:opacity-70 sm:h-[54px] sm:rounded-pill`}
         >
           {status === "loading" ? (
             <span
