@@ -34,11 +34,14 @@ export async function generateMetadata({
       siteName: SITE.name,
       locale: lang,
       type: "website",
+      // Regenerate with `node scripts/og-image.mjs` after asset changes.
+      images: [{ url: "/og.png", width: 1200, height: 630, alt: SITE.name }],
     },
     twitter: {
       card: "summary_large_image",
       title: dict.site.title,
       description: dict.site.description,
+      images: ["/og.png"],
     },
   };
 }

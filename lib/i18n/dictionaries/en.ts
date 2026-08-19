@@ -117,24 +117,6 @@ export const en = {
     ],
   },
 
-  aura: {
-    label: "The aura quiz — with the first drop",
-    title: "you've felt her. now *see* her.",
-    sub:
-      "Five energies, read as a spectrum — your own mix, in your own proportions. " +
-      "Out of it comes your diva profile: an aura in your colours, and the numbers to prove it.",
-    energies: [
-      ["L'Onde", 42],
-      ["Le Murmure", 24],
-      ["La Braise", 18],
-      ["Le Vertige", 10],
-      ["L'Éclat", 6],
-    ] as [string, number][],
-    hint: "move — she follows",
-    cta: "Join the waitlist. read her first.",
-    sampleMix: "Sample aura mix",
-  },
-
   form: {
     placeholder: "Enter your email",
     cta: "Join the waitlist",
@@ -230,13 +212,6 @@ export const en = {
     handle: "playlist",
   },
 
-  look: {
-    turntableAngle: "Turntable angle",
-    prev: "Previous look — {name}",
-    next: "Next look — {name}",
-    srCount: "look {n} of {total}: {name}",
-  },
-
   line: {
     sectionAria: "The first line — fall 2026",
     controls: "scroll · drag · arrows",
@@ -247,22 +222,9 @@ export const en = {
     ],
   },
 
-  marquee:
-    "you'll feel her before you see her ✦ diva lines ✦ first drop this fall ✦ limited run ✦ ",
-
   tagline: {
     line1: "Heels *dancewear* brand",
     line2: "made for dancers by dancers, for *movement*",
-  },
-
-  portraitAlt: {
-    heatCam: "Dancer portrait, heat-cam treatment",
-    neonWaves: "Dancer portrait, neon waves",
-    danceFloor: "Dance floor, heat horizon",
-  },
-
-  variantSwitcher: {
-    aria: "Design versions",
   },
 
   languageSwitcher: {
@@ -285,7 +247,7 @@ export const en = {
     },
     collect: {
       h: "What we collect",
-      p: "When you join the waitlist we store your email address, the date of signup, your browser language, optional campaign parameters (UTM), and a salted hash of your IP address used only for abuse prevention. Your raw IP address is never stored.",
+      p: "When you join the waitlist we store your email address, the date of signup, your browser language, optional campaign parameters (UTM), and a salted hash of your IP address used only for abuse prevention. Your raw IP address is never stored. If you take part in the referral game we also store the code of the person who invited you and, if you provide it (it's optional), your Instagram handle — used solely to DM you if you win. A generated stage name (e.g. \"diva solaire\") is assigned to you: that name, and never your email or Instagram handle, is what appears on the public leaderboard.",
     },
     why: {
       h: "Why we collect it",

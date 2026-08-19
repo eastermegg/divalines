@@ -113,24 +113,6 @@ export const fr: Dictionary = {
     ],
   },
 
-  aura: {
-    label: "Le quiz d'aura — avec la première collection",
-    title: "tu l'as sentie. maintenant, *vois*-la.",
-    sub:
-      "Cinq énergies, lues comme un spectre — ton propre mélange, dans tes propres proportions. " +
-      "Il en ressort ton profil de diva : une aura à tes couleurs, et les chiffres pour le prouver.",
-    energies: [
-      ["L'Onde", 42],
-      ["Le Murmure", 24],
-      ["La Braise", 18],
-      ["Le Vertige", 10],
-      ["L'Éclat", 6],
-    ],
-    hint: "bouge — elle suit",
-    cta: "Rejoins la liste d'attente. lis-la en avant-première.",
-    sampleMix: "Exemple de mélange d'aura",
-  },
-
   form: {
     placeholder: "Entre ton adresse e-mail",
     cta: "Rejoindre la liste d'attente",
@@ -226,13 +208,6 @@ export const fr: Dictionary = {
     handle: "playlist",
   },
 
-  look: {
-    turntableAngle: "Angle du plateau",
-    prev: "Look précédent — {name}",
-    next: "Look suivant — {name}",
-    srCount: "look {n} sur {total} : {name}",
-  },
-
   line: {
     sectionAria: "La première ligne — automne 2026",
     controls: "défile · glisse · flèches",
@@ -243,22 +218,9 @@ export const fr: Dictionary = {
     ],
   },
 
-  marquee:
-    "tu la sentiras avant de la voir ✦ diva lines ✦ première collection cet automne ✦ série limitée ✦ ",
-
   tagline: {
     line1: "Marque de vêtements de *danse* en talons",
     line2: "faite par des danseuses pour des danseuses, pour le *mouvement*",
-  },
-
-  portraitAlt: {
-    heatCam: "Portrait de danseuse, traitement caméra thermique",
-    neonWaves: "Portrait de danseuse, ondes néon",
-    danceFloor: "Piste de danse, horizon incandescent",
-  },
-
-  variantSwitcher: {
-    aria: "Versions du design",
   },
 
   languageSwitcher: {
@@ -281,7 +243,7 @@ export const fr: Dictionary = {
     },
     collect: {
       h: "Ce que nous collectons",
-      p: "Lorsque tu rejoins la liste d'attente, nous conservons ton adresse e-mail, la date d'inscription, la langue de ton navigateur, d'éventuels paramètres de campagne (UTM) et une empreinte salée de ton adresse IP, utilisée uniquement pour prévenir les abus. Ton adresse IP brute n'est jamais stockée.",
+      p: "Lorsque tu rejoins la liste d'attente, nous conservons ton adresse e-mail, la date d'inscription, la langue de ton navigateur, d'éventuels paramètres de campagne (UTM) et une empreinte salée de ton adresse IP, utilisée uniquement pour prévenir les abus. Ton adresse IP brute n'est jamais stockée. Si tu participes au parrainage, nous conservons aussi le code de la personne qui t'a invitée et, si tu le renseignes (c'est optionnel), ton identifiant Instagram — utilisé uniquement pour te contacter en message privé si tu gagnes. Un nom de scène généré (par exemple « diva solaire ») t'est attribué : c'est lui, et jamais ton e-mail ni ton identifiant Instagram, qui apparaît sur le classement public.",
     },
     why: {
       h: "Pourquoi nous les collectons",

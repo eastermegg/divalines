@@ -351,6 +351,10 @@ export default function VinylPlayer({ className = "" }: { className?: string }) 
           spinning to say so). The API swaps the inner div for its iframe on
           mount, so the iframe is never unmounted and audio never cuts. */}
       <div
+        // inert while collapsed: keeps the iframe mounted (audio running)
+        // but out of the tab order — otherwise keyboard users tab through
+        // an invisible Spotify embed.
+        inert={!panelOpen}
         className={`absolute top-0 right-[calc(100%+12px)] w-[320px] origin-top-right transition-all duration-500 ${
           panelOpen
             ? "pointer-events-auto translate-x-0 opacity-100"
