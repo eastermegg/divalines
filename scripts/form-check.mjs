@@ -7,11 +7,11 @@ await page.fill('input[name="email"]', "nope");
 await page.click('[data-waitlist-cta]');
 await page.waitForTimeout(400);
 console.log("error shown:", await page.locator('[data-waitlist] .text-neon-pink').first().textContent().catch(()=>null));
-// then valid
+// then valid → referral modal (replaces the old success pill)
 await page.fill('input[name="email"]', "e2e@example.com");
 await page.click('[data-waitlist-cta]');
-await page.waitForSelector('[data-waitlist-success]', { timeout: 5000 });
-console.log("success:", (await page.locator('[data-waitlist-success]').first().textContent()).trim());
+await page.waitForSelector('[role="dialog"]', { timeout: 8000 });
+console.log("success modal:", (await page.locator('[role="dialog"] .font-display').first().textContent()).trim());
 // keyboard reachability: tab from top to submit
 await page.goto("http://localhost:4123/", { waitUntil: "networkidle" });
 const seen = [];

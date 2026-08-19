@@ -34,11 +34,14 @@ export async function generateMetadata({
       siteName: SITE.name,
       locale: lang,
       type: "website",
+      // Regenerate with `node scripts/og-image.mjs` after asset changes.
+      images: [{ url: "/og.png", width: 1200, height: 630, alt: SITE.name }],
     },
     twitter: {
       card: "summary_large_image",
       title: dict.site.title,
       description: dict.site.description,
+      images: ["/og.png"],
     },
   };
 }
@@ -79,7 +82,14 @@ export default async function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: introScript }} />
       </head>
-      <body>
+      {/* data-waitlist-closed: J-3 freeze flag (spec §4), read by
+          WaitlistForm on mount. Baked at build — flipping WAITLIST_CLOSED
+          on Vercel needs a redeploy; the API enforces it live regardless. */}
+      <body
+        data-waitlist-closed={
+          process.env.WAITLIST_CLOSED === "true" ? "true" : undefined
+        }
+      >
         <DictionaryProvider dict={dict} locale={locale}>
           {children}
         </DictionaryProvider>

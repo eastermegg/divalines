@@ -4,6 +4,19 @@ import { useEffect, useId, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/lib/motion";
 import { useDictionary } from "@/lib/i18n/context";
+import AccentText from "@/components/AccentText";
+import ReferralModal from "@/components/ReferralModal";
+import ReferralPanel from "@/components/ReferralPanel";
+import {
+  broadcastMe,
+  captureRef,
+  fetchRank,
+  getMe,
+  getStoredRef,
+  onMeChange,
+  setMe,
+  type RankInfo,
+} from "@/lib/referral";
 
 type Status = "idle" | "loading" | "success" | "error";
 
@@ -47,8 +60,16 @@ export default function WaitlistForm({
 }) {
   const { dict, locale } = useDictionary();
   const FORM = dict.form;
+  const R = dict.referral;
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
+  // Referral state: `info` present = she has a code (fresh signup or
+  // restored from localStorage), so the form yields to the ranking panel.
+  const [info, setInfo] = useState<RankInfo | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  // Fresh signup (not an `already` lookup) → the modal asks for her insta.
+  const [freshJoin, setFreshJoin] = useState(false);
+  const [closed, setClosed] = useState(false);
   const successRef = useRef<HTMLParagraphElement>(null);
   const inputId = useId();
   const errorId = useId();
@@ -67,6 +88,52 @@ export default function WaitlistForm({
   const stackRef = useRef<HTMLDivElement>(null);
   const countRef = useRef<HTMLSpanElement>(null);
   const didJoin = useRef(false);
+
+  // Referral bootstrap: bank ?ref= for later, then restore "me" — a
+  // returning subscriber sees her live ranking instead of the form.
+  useEffect(() => {
+    captureRef();
+    if (document.body.dataset.waitlistClosed === "true") setClosed(true);
+    const me = getMe();
+    if (!me) return;
+    let cancelled = false;
+    fetchRank(me)
+      .then((res) => {
+        if (cancelled) return;
+        if (res === null) {
+          // Stale code (wiped row, hand-edited storage) — back to the form.
+          setMe(null);
+          return;
+        }
+        setInfo({
+          ref_code: me,
+          rank: res.rank,
+          referrals: res.referrals,
+          total: res.total,
+          to_top10: res.to_top10,
+          diva_name: res.diva_name,
+        });
+        if (res.closed) setClosed(true);
+      })
+      .catch(() => {
+        /* rank endpoint down — keep the form usable */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Mirror the sibling instance (hero ↔ footer): signup there shows the
+  // panel here; "not you?" there restores the form here.
+  useEffect(() => {
+    return onMeChange((next) => {
+      setInfo(next);
+      if (next === null) {
+        setShowModal(false);
+        setStatus("idle");
+      }
+    });
+  }, []);
 
   // Slot a fresh avatar in at the front, drop the oldest, and bump the count
   // by the new joiner plus a couple of "others" so the crowd feels alive.
@@ -168,11 +235,39 @@ export default function WaitlistForm({
       const res = await fetch("/api/waitlist", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ email, company, utm: collectUtm() }),
+        body: JSON.stringify({
+          email,
+          company,
+          ref: getStoredRef() ?? undefined,
+          utm: collectUtm(),
+        }),
       });
-      if (res.ok) {
+      const payload = await res.json().catch(() => null);
+      if (res.ok && payload?.ref_code) {
+        // Signed up (or found again via `already`) — remember her and open
+        // the modal with rank + link + share actions.
+        setMe(payload.ref_code);
+        const nextInfo: RankInfo = {
+          ref_code: payload.ref_code,
+          rank: payload.rank,
+          referrals: payload.referrals,
+          total: payload.total,
+          to_top10: payload.to_top10,
+          diva_name: payload.diva_name,
+        };
+        setInfo(nextInfo);
+        setFreshJoin(!payload.already);
+        setShowModal(true);
+        setStatus("success");
+        broadcastMe(nextInfo);
+        if (!payload.already) registerJoin();
+      } else if (res.ok) {
+        // Degraded payload without a code — fall back to the plain pill.
         registerJoin();
         setStatus("success");
+      } else if (res.status === 403) {
+        setClosed(true);
+        setStatus("idle");
       } else if (res.status === 429) {
         setError(FORM.errorRateLimited);
         setStatus("error");
@@ -187,6 +282,14 @@ export default function WaitlistForm({
       setError(FORM.errorServer);
       setStatus("error");
     }
+  }
+
+  function onNotYou() {
+    setMe(null);
+    setInfo(null);
+    setShowModal(false);
+    setStatus("idle");
+    broadcastMe(null);
   }
 
   // Persistent social-proof row — an overlapping avatar stack (newest on top)
@@ -221,6 +324,56 @@ export default function WaitlistForm({
       </p>
     </div>
   );
+
+  // She has a code → her live ranking replaces the form ("find my rank"
+  // without email, spec §3). Same content as the modal + "not you?".
+  if (info) {
+    return (
+      // relative z-30: the panel is far taller than the email pill whose
+      // slot it takes (the heat hero bottom-anchors that slot), so it must
+      // paint above neighbouring hero copy — the veil blur does the rest.
+      <div
+        data-waitlist
+        className={`relative z-30 ${compact ? "" : "w-full max-w-[560px]"}`}
+      >
+        <div
+          className={`${onLight ? "surface-card-light" : "surface-card"} rounded-[24px] p-5 text-left sm:p-6`}
+        >
+          {closed ? (
+            <p
+              className={`font-display mb-4 text-2xl italic sm:text-3xl ${successText}`}
+            >
+              <AccentText text={R.closedTitle} />
+            </p>
+          ) : null}
+          <ReferralPanel info={info} onLight={onLight} onNotYou={onNotYou} />
+        </div>
+        {showModal ? (
+          <ReferralModal
+            info={info}
+            askInsta={freshJoin}
+            onClose={() => setShowModal(false)}
+          />
+        ) : null}
+      </div>
+    );
+  }
+
+  // Frozen (J-3) and no identity to show — the state itself is the message.
+  if (closed) {
+    return (
+      <div data-waitlist className={compact ? "" : "w-full max-w-[560px]"}>
+        <div
+          className={`${onLight ? "surface-card-light" : "surface-card"} rounded-[24px] p-6 text-left`}
+        >
+          <p className={`font-display text-2xl italic sm:text-3xl ${successText}`}>
+            <AccentText text={R.closedTitle} />
+          </p>
+          <p className={`mt-2 text-sm ${consentText}`}>{R.closedBody}</p>
+        </div>
+      </div>
+    );
+  }
 
   if (status === "success") {
     return (
@@ -297,6 +450,9 @@ export default function WaitlistForm({
           </p>
         </div>
       ) : null}
+
+      {/* The form doubles as "find my rank again" on a fresh device. */}
+      <p className={`mt-2 px-5 text-xs ${consentText}`}>{R.alreadyHint}</p>
 
       {proof}
     </div>

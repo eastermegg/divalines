@@ -16,11 +16,14 @@ const MAX_KEYS = 5000;
 
 const hits = new Map<string, number[]>();
 
-export async function checkRateLimit(key: string): Promise<boolean> {
+export async function checkRateLimit(
+  key: string,
+  max: number = MAX_REQUESTS,
+): Promise<boolean> {
   const now = Date.now();
   const fresh = (hits.get(key) ?? []).filter((t) => t > now - WINDOW_MS);
 
-  if (fresh.length >= MAX_REQUESTS) {
+  if (fresh.length >= max) {
     hits.set(key, fresh);
     return false;
   }

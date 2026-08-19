@@ -10,7 +10,7 @@ you're ready to wire the real backend. Steps map to spec §7.
 brew install supabase/tap/supabase
 supabase init
 supabase link --project-ref <your-project-ref>
-supabase db push          # applies supabase/migrations/0001_leads.sql
+supabase db push          # applies supabase/migrations/*.sql (leads + quiz + referral)
 ```
 
 Then copy the project URL + service role key into `.env.local`:
@@ -81,6 +81,39 @@ curl -s -X POST localhost:3000/api/waitlist -H 'content-type: application/json' 
   -d '{"email":"bot@example.com","company":"x"}'
 
 # 6 rapid posts from one IP → 6th answers 429
+```
+
+## 7. Referral program (spec parrainage)
+
+`0003_referral.sql` adds `ref_code` / `referred_by` / `insta_handle` to
+`leads` plus the `get_rank()` RPC; `0004_diva_names.sql` adds the public
+stage name (`diva_name`, e.g. "diva solaire") and the `get_leaderboard()`
+RPC behind the `/classement` page (top 10, names + counts only — emails
+never leave the base). No extra provisioning: all routes
+(`POST /api/waitlist`, `GET /api/waitlist/rank`,
+`GET /api/waitlist/leaderboard`, `POST /api/waitlist/insta`) reuse the
+service-role client. With no Supabase env they answer mock data so the
+whole flow (modal, story visual, returning-visitor block, leaderboard)
+is testable locally. The signup form is email-only; the insta handle is
+asked in the success modal (first-write-wins — codes are public, so the
+route never overwrites an existing handle).
+
+- **Story background**: drop the designer's 1080×1920 asset at
+  `public/story-bg.png` (keep the middle band free for the dynamic text).
+  Until it exists the canvas paints a heat-palette fallback.
+- **Closing (J-3)**: set `WAITLIST_CLOSED=true` on Vercel and **redeploy**
+  (the flag is read at build for the UI, live for the API). Signups then
+  answer 403; rankings stay readable.
+- **Export**: the closing SQL (full ranking, emails + insta handles) is in
+  a comment at the bottom of `supabase/migrations/0003_referral.sql`.
+
+```bash
+# referral signup via ?ref=
+curl -s -X POST localhost:3000/api/waitlist -H 'content-type: application/json' \
+  -d '{"email":"amie@example.com","insta":"@Ma.Copine","ref":"abc123"}'
+
+# rank lookup (no email ever returned)
+curl -s 'localhost:3000/api/waitlist/rank?code=abc123'
 ```
 
 ## Rate-limit note

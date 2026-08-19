@@ -117,24 +117,6 @@ export const en = {
     ],
   },
 
-  aura: {
-    label: "The aura quiz — with the first drop",
-    title: "you've felt her. now *see* her.",
-    sub:
-      "Five energies, read as a spectrum — your own mix, in your own proportions. " +
-      "Out of it comes your diva profile: an aura in your colours, and the numbers to prove it.",
-    energies: [
-      ["L'Onde", 42],
-      ["Le Murmure", 24],
-      ["La Braise", 18],
-      ["Le Vertige", 10],
-      ["L'Éclat", 6],
-    ] as [string, number][],
-    hint: "move — she follows",
-    cta: "Join the waitlist. read her first.",
-    sampleMix: "Sample aura mix",
-  },
-
   form: {
     placeholder: "Enter your email",
     cta: "Join the waitlist",
@@ -145,6 +127,54 @@ export const en = {
     consent: "By joining you agree to receive launch updates.",
     proofBefore: "Already",
     proof: "on the list ✦",
+  },
+
+  referral: {
+    instaPlaceholder: "@yourhandle",
+    alreadyHint: "already on the list? enter your email to see your rank",
+    panelTitle: "you're on the *list*.",
+    rankLine: "You're {rank} of {total}",
+    topTenLine: "You're in the top 10 🖤 hold your place",
+    toTopOne: "One more referral and you're in the top 10",
+    toTopMany: "{n} more referrals to crack the top 10",
+    referralsLine: "{n} joined through your link ✦",
+    linkLabel: "your referral link",
+    copy: "Copy the link",
+    copied: "Link copied ✦",
+    story: "Instagram story",
+    storyToast:
+      "Visual downloaded + link copied — paste it as a link sticker on your story",
+    storyFallback:
+      "long-press the image to save it — your link is already copied",
+    whatsapp: "Share on WhatsApp",
+    whatsappText: "Join me on the Divalines waitlist 🖤 {link}",
+    rule: "Bring your girls up the list — the first 10 get the drop 24h before everyone else.",
+    notYou: "not you?",
+    close: "Close",
+    stageLabel: "on the ranking:",
+    seeBoard: "see the full ranking",
+    instaAsk: "your insta — so we can DM you if you win 🖤",
+    instaSaveCta: "Save",
+    instaSaved: "saved 🖤",
+    storyTitle: "i'm on the list",
+    storyOf: "of {total}",
+    closedTitle: "the ranking is *closed*.",
+    closedBody: "Signups are frozen — your ranking stays right here.",
+    loading: "checking your rank…",
+  },
+
+  leaderboard: {
+    metaTitle: "The ranking",
+    eyebrow: "the waitlist game",
+    title: "the *ranking*.",
+    privacyNote: "Stage names only — emails never appear here.",
+    listAria: "Waitlist ranking",
+    count: "{n} on the list",
+    refsOne: "1 referral",
+    refsMany: "{n} referrals",
+    you: "you ✦",
+    empty: "no one yet — the line starts with you.",
+    joinTitle: "your turn — join the *line*.",
   },
 
   countdown: {
@@ -182,13 +212,6 @@ export const en = {
     handle: "playlist",
   },
 
-  look: {
-    turntableAngle: "Turntable angle",
-    prev: "Previous look — {name}",
-    next: "Next look — {name}",
-    srCount: "look {n} of {total}: {name}",
-  },
-
   line: {
     sectionAria: "The first line — fall 2026",
     controls: "scroll · drag · arrows",
@@ -199,22 +222,9 @@ export const en = {
     ],
   },
 
-  marquee:
-    "you'll feel her before you see her ✦ diva lines ✦ first drop this fall ✦ limited run ✦ ",
-
   tagline: {
     line1: "Heels *dancewear* brand",
     line2: "made for dancers by dancers, for *movement*",
-  },
-
-  portraitAlt: {
-    heatCam: "Dancer portrait, heat-cam treatment",
-    neonWaves: "Dancer portrait, neon waves",
-    danceFloor: "Dance floor, heat horizon",
-  },
-
-  variantSwitcher: {
-    aria: "Design versions",
   },
 
   languageSwitcher: {
@@ -237,7 +247,7 @@ export const en = {
     },
     collect: {
       h: "What we collect",
-      p: "When you join the waitlist we store your email address, the date of signup, your browser language, optional campaign parameters (UTM), and a salted hash of your IP address used only for abuse prevention. Your raw IP address is never stored.",
+      p: "When you join the waitlist we store your email address, the date of signup, your browser language, optional campaign parameters (UTM), and a salted hash of your IP address used only for abuse prevention. Your raw IP address is never stored. If you take part in the referral game we also store the code of the person who invited you and, if you provide it (it's optional), your Instagram handle — used solely to DM you if you win. A generated stage name (e.g. \"diva solaire\") is assigned to you: that name, and never your email or Instagram handle, is what appears on the public leaderboard.",
     },
     why: {
       h: "Why we collect it",

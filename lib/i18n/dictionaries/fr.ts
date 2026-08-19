@@ -113,24 +113,6 @@ export const fr: Dictionary = {
     ],
   },
 
-  aura: {
-    label: "Le quiz d'aura — avec la première collection",
-    title: "tu l'as sentie. maintenant, *vois*-la.",
-    sub:
-      "Cinq énergies, lues comme un spectre — ton propre mélange, dans tes propres proportions. " +
-      "Il en ressort ton profil de diva : une aura à tes couleurs, et les chiffres pour le prouver.",
-    energies: [
-      ["L'Onde", 42],
-      ["Le Murmure", 24],
-      ["La Braise", 18],
-      ["Le Vertige", 10],
-      ["L'Éclat", 6],
-    ],
-    hint: "bouge — elle suit",
-    cta: "Rejoins la liste d'attente. lis-la en avant-première.",
-    sampleMix: "Exemple de mélange d'aura",
-  },
-
   form: {
     placeholder: "Entre ton adresse e-mail",
     cta: "Rejoindre la liste d'attente",
@@ -141,6 +123,54 @@ export const fr: Dictionary = {
     consent: "En rejoignant, tu acceptes de recevoir des nouvelles du lancement.",
     proofBefore: "Déjà",
     proof: "sur la liste ✦",
+  },
+
+  referral: {
+    instaPlaceholder: "@tonhandle",
+    alreadyHint: "déjà inscrite ? entre ton e-mail pour voir ton classement",
+    panelTitle: "tu es sur la *liste*.",
+    rankLine: "Tu es {rank} sur {total}",
+    topTenLine: "Tu es dans le top 10 🖤 garde ta place",
+    toTopOne: "Encore une filleule pour entrer dans le top 10",
+    toTopMany: "Encore {n} filleules pour entrer dans le top 10",
+    referralsLine: "{n} inscrites grâce à ton lien ✦",
+    linkLabel: "ton lien de parrainage",
+    copy: "Copier le lien",
+    copied: "Lien copié ✦",
+    story: "Story Instagram",
+    storyToast:
+      "Visuel téléchargé + lien copié — colle-le en sticker lien sur ta story",
+    storyFallback:
+      "appui long sur l'image pour l'enregistrer — ton lien est déjà copié",
+    whatsapp: "Partager sur WhatsApp",
+    whatsappText: "Rejoins-moi sur la waitlist Divalines 🖤 {link}",
+    rule: "Fais monter tes copines — les 10 premières auront accès au drop 24h avant tout le monde.",
+    notYou: "pas toi ?",
+    close: "Fermer",
+    stageLabel: "sur le classement :",
+    seeBoard: "voir le classement complet",
+    instaAsk: "ton insta — pour te DM si tu gagnes 🖤",
+    instaSaveCta: "Noter",
+    instaSaved: "noté 🖤",
+    storyTitle: "je suis sur la liste",
+    storyOf: "sur {total}",
+    closedTitle: "classement *clôturé*.",
+    closedBody: "Les inscriptions sont fermées — ton classement reste consultable ici.",
+    loading: "on va chercher ton classement…",
+  },
+
+  leaderboard: {
+    metaTitle: "Le classement",
+    eyebrow: "le jeu de la liste",
+    title: "le *classement*.",
+    privacyNote: "Noms de scène uniquement — jamais d'e-mails ici.",
+    listAria: "Classement de la liste d'attente",
+    count: "{n} sur la liste",
+    refsOne: "1 filleule",
+    refsMany: "{n} filleules",
+    you: "toi ✦",
+    empty: "personne encore — la ligne commence avec toi.",
+    joinTitle: "à ton tour — rejoins la *ligne*.",
   },
 
   countdown: {
@@ -178,13 +208,6 @@ export const fr: Dictionary = {
     handle: "playlist",
   },
 
-  look: {
-    turntableAngle: "Angle du plateau",
-    prev: "Look précédent — {name}",
-    next: "Look suivant — {name}",
-    srCount: "look {n} sur {total} : {name}",
-  },
-
   line: {
     sectionAria: "La première ligne — automne 2026",
     controls: "défile · glisse · flèches",
@@ -195,22 +218,9 @@ export const fr: Dictionary = {
     ],
   },
 
-  marquee:
-    "tu la sentiras avant de la voir ✦ diva lines ✦ première collection cet automne ✦ série limitée ✦ ",
-
   tagline: {
     line1: "Marque de vêtements de *danse* en talons",
     line2: "faite par des danseuses pour des danseuses, pour le *mouvement*",
-  },
-
-  portraitAlt: {
-    heatCam: "Portrait de danseuse, traitement caméra thermique",
-    neonWaves: "Portrait de danseuse, ondes néon",
-    danceFloor: "Piste de danse, horizon incandescent",
-  },
-
-  variantSwitcher: {
-    aria: "Versions du design",
   },
 
   languageSwitcher: {
@@ -233,7 +243,7 @@ export const fr: Dictionary = {
     },
     collect: {
       h: "Ce que nous collectons",
-      p: "Lorsque tu rejoins la liste d'attente, nous conservons ton adresse e-mail, la date d'inscription, la langue de ton navigateur, d'éventuels paramètres de campagne (UTM) et une empreinte salée de ton adresse IP, utilisée uniquement pour prévenir les abus. Ton adresse IP brute n'est jamais stockée.",
+      p: "Lorsque tu rejoins la liste d'attente, nous conservons ton adresse e-mail, la date d'inscription, la langue de ton navigateur, d'éventuels paramètres de campagne (UTM) et une empreinte salée de ton adresse IP, utilisée uniquement pour prévenir les abus. Ton adresse IP brute n'est jamais stockée. Si tu participes au parrainage, nous conservons aussi le code de la personne qui t'a invitée et, si tu le renseignes (c'est optionnel), ton identifiant Instagram — utilisé uniquement pour te contacter en message privé si tu gagnes. Un nom de scène généré (par exemple « diva solaire ») t'est attribué : c'est lui, et jamais ton e-mail ni ton identifiant Instagram, qui apparaît sur le classement public.",
     },
     why: {
       h: "Pourquoi nous les collectons",

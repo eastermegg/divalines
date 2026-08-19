@@ -8,10 +8,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const languagesFor = (path: string) =>
     Object.fromEntries(locales.map((l) => [l, `${SITE.url}/${l}${path}`]));
 
-  return locales.map((locale) => ({
-    url: `${SITE.url}/${locale}`,
-    changeFrequency: "weekly",
-    priority: 1,
-    alternates: { languages: languagesFor("") },
-  }));
+  return locales.flatMap((locale): MetadataRoute.Sitemap => [
+    {
+      url: `${SITE.url}/${locale}`,
+      changeFrequency: "weekly",
+      priority: 1,
+      alternates: { languages: languagesFor("") },
+    },
+    {
+      url: `${SITE.url}/${locale}/classement`,
+      changeFrequency: "daily",
+      priority: 0.6,
+      alternates: { languages: languagesFor("/classement") },
+    },
+  ]);
 }

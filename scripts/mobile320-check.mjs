@@ -1,0 +1,12 @@
+import { chromium } from "playwright-core";
+const browser = await chromium.launch({ executablePath: "/Users/meghanregior/Library/Caches/ms-playwright/chromium-1140/chrome-mac/Chromium.app/Contents/MacOS/Chromium" });
+const page = await browser.newPage({ viewport: { width: 320, height: 700 } });
+await page.goto("http://localhost:4123/fr", { waitUntil: "networkidle" });
+const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+console.log("fr horizontal overflow:", overflow, "px");
+await page.goto("http://localhost:4123/fr/classement", { waitUntil: "domcontentloaded" });
+await page.waitForSelector('ol[aria-label] li', { timeout: 8000 });
+const o2 = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+console.log("classement overflow:", o2, "px");
+await page.screenshot({ path: "/tmp/classement-320.png", fullPage: true });
+await browser.close();
