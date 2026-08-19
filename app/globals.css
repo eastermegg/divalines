@@ -262,6 +262,22 @@
   box-shadow: inset 0 0 0 1px rgba(244, 234, 220, 0.12);
 }
 
+/* Near-opaque card surfaces for the referral ranking panel — it carries
+   dense copy and can sit over hero artwork (the heat hero bottom-anchors
+   the form slot), so the see-through veil isn't ground enough. */
+@utility surface-card {
+  background: rgba(14, 10, 22, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: inset 0 0 0 1px rgba(244, 234, 220, 0.12);
+}
+@utility surface-card-light {
+  background: rgba(255, 248, 238, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: inset 0 0 0 1px rgba(23, 16, 33, 0.16);
+}
+
 /* Light counterpart — a warm frosted pill for use ON the bright footer
    gradient, where the dark veil would read heavy. Cream frost + ink
    hairline so dark text and the night CTA pop against the heat. */

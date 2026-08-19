@@ -79,7 +79,14 @@ export default async function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: introScript }} />
       </head>
-      <body>
+      {/* data-waitlist-closed: J-3 freeze flag (spec §4), read by
+          WaitlistForm on mount. Baked at build — flipping WAITLIST_CLOSED
+          on Vercel needs a redeploy; the API enforces it live regardless. */}
+      <body
+        data-waitlist-closed={
+          process.env.WAITLIST_CLOSED === "true" ? "true" : undefined
+        }
+      >
         <DictionaryProvider dict={dict} locale={locale}>
           {children}
         </DictionaryProvider>
