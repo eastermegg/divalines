@@ -153,6 +153,9 @@ export default function ReferralPanel({
         sticker: R.storySticker,
         linkSlot: R.storyLinkSlot,
         brand: SITE.name.toLowerCase(),
+        // Colourway stable per person: her code always maps to HER template,
+        // but colours alternate across different girls' stories.
+        variant: [...info.ref_code].reduce((a, c) => a + c.charCodeAt(0), 0),
       });
       if (canDownloadFile()) {
         triggerDownload(dataUrl, "divalines-story.png");
