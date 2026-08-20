@@ -45,7 +45,7 @@ export default async function ClassementPage({ params }: LangParams) {
         {/* Title band — same warm heat glow as the privacy page */}
         {/* Title band — compact on purpose: the ranking must be visible
             without scrolling, the title just introduces it. */}
-        <section className="relative isolate overflow-hidden pt-[calc(var(--banner-h)+var(--header-h)+clamp(1.75rem,4vh,3rem))] pb-[clamp(6.5rem,14vh,9.5rem)]">
+        <section className="relative isolate overflow-hidden pt-[calc(var(--banner-h)+var(--header-h)+clamp(1.75rem,4vh,3rem))] pb-[clamp(6.5rem,14vh,9.5rem)] lg:pb-[clamp(3rem,6.5vh,4.5rem)]">
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 -z-10 opacity-80"
@@ -93,7 +93,7 @@ export default async function ClassementPage({ params }: LangParams) {
             </div>
             {/* Only the CARD straddles the title band (negative margin
                 pulls it up into the glow); the board column stays put. */}
-            <aside className="order-1 -mt-[clamp(6.5rem,14.5vh,9rem)] lg:order-2 lg:-mt-[clamp(17rem,37vh,24rem)]">
+            <aside className="order-1 -mt-[clamp(6.5rem,14.5vh,9rem)] lg:order-2 lg:-mt-[clamp(13.5rem,29.5vh,19.5rem)]">
               <div className="lg:sticky lg:top-[calc(var(--banner-h)+var(--header-h)+2rem)]">
                 <WaitlistForm compact expanded />
               </div>
