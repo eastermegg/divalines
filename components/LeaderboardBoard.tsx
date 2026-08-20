@@ -9,6 +9,7 @@ import {
   fetchLeaderboard,
   fetchRank,
   getMe,
+  onMeChange,
   type Leaderboard,
   type RankInfo,
 } from "@/lib/referral";
@@ -65,6 +66,22 @@ export default function LeaderboardBoard() {
     return () => {
       cancelled = true;
     };
+  }, []);
+
+  // Live update on signup/"pas toi ?" from the sibling card: pin her row
+  // straight from the broadcast payload (no wait), then refetch the list
+  // past the CDN cache so her name and the new total appear reload-free.
+  useEffect(() => {
+    return onMeChange((next) => {
+      setMeInfo(next);
+      if (next) {
+        fetchLeaderboard(true)
+          .then((b) => setBoard(b))
+          .catch(() => {
+            /* board keeps its last state; her pinned row already shows */
+          });
+      }
+    });
   }, []);
 
   // Entrance + a live pulse: rows stagger in, then every couple seconds a

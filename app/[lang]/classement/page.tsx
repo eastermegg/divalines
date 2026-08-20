@@ -74,8 +74,10 @@ export default async function ClassementPage({ params }: LangParams) {
                 </span>
               ))}
             </h1>
-            {/* The title stands alone; the payoff (Top 5 / Top 10) lives in
-                the milestone ladder inside the signup card. */}
+            {/* The rules, in one quiet line under the title. */}
+            <p className="mt-4 text-sm text-cream/65">
+              {fill(dict.referral.sharePitch, { top: PRIZE_TOP_N })}
+            </p>
           </div>
         </section>
 
@@ -91,7 +93,7 @@ export default async function ClassementPage({ params }: LangParams) {
             </div>
             {/* Only the CARD straddles the title band (negative margin
                 pulls it up into the glow); the board column stays put. */}
-            <aside className="order-1 -mt-[clamp(5.5rem,12.5vh,8.25rem)] lg:order-2">
+            <aside className="order-1 -mt-[clamp(6.5rem,14.5vh,9rem)] lg:order-2 lg:-mt-[clamp(5.5rem,12.5vh,8.25rem)]">
               <div className="lg:sticky lg:top-[calc(var(--banner-h)+var(--header-h)+2rem)]">
                 <WaitlistForm compact expanded />
               </div>

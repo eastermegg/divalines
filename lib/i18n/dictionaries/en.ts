@@ -133,7 +133,7 @@ export const en = {
     sharePitch: "Top 5: 10% off. Top {top}: in 24h early.",
     stakes:
       "Try your luck and join the waitlist: Top 5: 10% off. Top {top}: in 24h early.",
-    shareLine: "Share your link: every diva who joins moves you up.",
+    shareLine: "The more friends join through your link, the more places you win.",
     rankLine: "Your place: {rank} of {total}.",
     referralsLine: "{n} joined through your link ✦",
     linkLabel: "Your link",
