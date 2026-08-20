@@ -152,7 +152,7 @@ export const en = {
     notYou: "Not you?",
     close: "Close",
     storyTitle: "i took my place for the first drop",
-    storySticker: "the waiting list is open",
+    storySticker: "join and play for 10% off and 24h early access",
     storyLinkSlot: "paste your link here ✦",
     storyOf: "of {total}",
     closedTitle: "Signups are *closed*.",
