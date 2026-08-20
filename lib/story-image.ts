@@ -180,6 +180,11 @@ export async function renderStoryImage(text: StoryText): Promise<string> {
     ctx.font = serifFont(60);
     ctx.fillStyle = "#f4eadc";
     ctx.fillText(text.ofTotal, W / 2, H * 0.44 + 440);
+
+    // The context line — why this story exists — just above the baked-in
+    // "Ajoute ton lien" slot.
+    fit(text.sticker, 42, 30, maxW, serifFont);
+    ctx.fillText(text.sticker, W / 2, H * 0.705);
     ctx.restore();
 
     return canvas.toDataURL("image/png");
