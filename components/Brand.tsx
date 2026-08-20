@@ -20,7 +20,7 @@ const WORDMARK_PATH =
 
 export function Wordmark({
   className = "",
-  title = "Diva Lines",
+  title = "Divalines",
   outlined = false,
 }: {
   className?: string;

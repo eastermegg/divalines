@@ -42,12 +42,12 @@ export default function Countdown({ target }: { target: string }) {
     // Regular (Switzer ships 400/500 only) — matching the header's brand
     // block typography.
     <div className="text-left text-[13px] leading-[1.15] tracking-[-0.19px]">
-      <p className={urgent ? "font-medium text-neon-pink" : "font-medium text-cream"}>
+      <p className={urgent ? "font-medium text-neon-pink" : "font-medium"}>
         {dict.countdown.label}
       </p>
       <p
         aria-hidden="true"
-        className="font-normal tabular-nums text-cream"
+        className="font-normal tabular-nums"
         data-countdown
       >
         <Group value={parts.days} />
@@ -133,5 +133,5 @@ function Digit({ d }: { d: string }) {
 }
 
 function Sep() {
-  return <span className="mx-px text-cream/40">:</span>;
+  return <span className="mx-px opacity-40">:</span>;
 }

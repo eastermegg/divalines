@@ -38,20 +38,20 @@ const MANIFESTO_TEXT = [
 
 export const en = {
   site: {
-    title: "Diva Lines — Independ Heels Dancewear. Join the waitlist",
+    title: "Divalines · Independent heels dancewear. Join the waitlist",
     description:
-      "Independ heels dancewear, designed in Paris. Heels engineered for the floor, cut for the body. First drop this fall — limited run, waitlist first.",
-    brandLine: ["Independ Heels Dancewear Brand", "Designed in Paris"] as [
+      "Independent heels dancewear, designed in Paris. Technical pieces that follow every move. First collection this fall.",
+    brandLine: ["Independent dancewear brand for heels dancers", "Designed in Paris"] as [
       string,
       string,
     ],
   },
 
   hero: {
-    hook: ["You'll Feel Her.", "Before You See Her.", "Period."],
+    hook: ["Feel powerful.", "Own it.", "Simple as that."],
     paragraph:
-      "Heels engineered for the floor, cut for the body. First drop this fall — limited run, waitlist first.",
-    sr: "Diva Lines — independ heels dancewear, designed in Paris",
+      "Technical dancewear built for heels dancers, following every move. First collection this fall.",
+    sr: "Divalines, independent dancewear brand for heels dancers, designed in Paris",
   },
 
   manifesto: MANIFESTO_TEXT,
@@ -63,11 +63,8 @@ export const en = {
   manifestoLabel: "the manifesto",
 
   collection: {
-    label: "The first line — fall 2026",
-    title: "four pieces. cut for the *floor*.",
-    sub: "Sketched until the drop. The waitlist sees them shot first.",
-    hint: "drag to spin",
-    revealed: "— revealed at the drop",
+    label: "The first line · Fall 2026",
+    title: "Four pieces. Cut for the *studio*.",
     items: [
       {
         n: "N°01",
@@ -119,81 +116,108 @@ export const en = {
 
   form: {
     placeholder: "Enter your email",
-    cta: "Join the waitlist",
+    cta: "Sign me up",
     success: "You're on the list. ✦",
-    errorInvalid: "That email doesn't look right — try again.",
+    errorInvalid: "That email doesn't look right, try again.",
     errorServer: "Something slipped. Try again in a moment.",
-    errorRateLimited: "Easy — too many tries. Give it a few minutes.",
-    consent: "By joining you agree to receive launch updates.",
-    proofBefore: "Already",
-    proof: "on the list ✦",
+    errorRateLimited: "Easy: too many tries. Give it a few minutes.",
+    crowd: "the line's filling up ✦",
   },
 
   referral: {
-    instaPlaceholder: "@yourhandle",
-    alreadyHint: "already on the list? enter your email to see your rank",
-    panelTitle: "you're on the *list*.",
-    rankLine: "You're {rank} of {total}",
-    topTenLine: "You're in the top 10 🖤 hold your place",
-    toTopOne: "One more referral and you're in the top 10",
-    toTopMany: "{n} more referrals to crack the top 10",
+    seeMyRank: "See my ranking",
+    myLink: "My referral link",
+    onList: "You're on the list 🖤",
+    panelTitle: "You're signed *up*.",
+    panelTitleNamed: "{name}, you're signed *up*.",
+    sharePitch: "Top 5: 10% off. Top {top}: in 24h early.",
+    stakes:
+      "Try your luck and join the waitlist: Top 5: 10% off. Top {top}: in 24h early.",
+    shareLine: "Share your link: every diva who joins moves you up.",
+    rankLine: "Your place: {rank} of {total}.",
     referralsLine: "{n} joined through your link ✦",
-    linkLabel: "your referral link",
+    linkLabel: "Your link",
     copy: "Copy the link",
     copied: "Link copied ✦",
     story: "Instagram story",
     storyToast:
-      "Visual downloaded + link copied — paste it as a link sticker on your story",
+      "Visual downloaded + link copied. Paste it as a link sticker on your story",
     storyFallback:
-      "long-press the image to save it — your link is already copied",
+      "Long-press the image to save it. Your link is already copied",
     whatsapp: "Share on WhatsApp",
-    whatsappText: "Join me on the Divalines waitlist 🖤 {link}",
-    rule: "Bring your girls up the list — the first 10 get the drop 24h before everyone else.",
-    notYou: "not you?",
+    share: "Share",
+    shareText:
+      "the heels dancewear brand i told you about is opening its waiting list for the first drop ✦ sign up with my link and bring your gang too - the first girls get 10% off and 24h early access",
+    rule: "The first collection is limited. Sign up, bring your diva gang in, move up the list. Top 5: 10% off. Top {top}: in 24h early.",
+    notYou: "Not you?",
     close: "Close",
-    stageLabel: "on the ranking:",
-    seeBoard: "see the full ranking",
-    instaAsk: "your insta — so we can DM you if you win 🖤",
-    instaSaveCta: "Save",
-    instaSaved: "saved 🖤",
-    storyTitle: "i'm on the list",
+    storyTitle: "i took my place",
+    storySticker: "the first drop waiting list is open",
+    storyLinkSlot: "paste your link here ✦",
     storyOf: "of {total}",
-    closedTitle: "the ranking is *closed*.",
-    closedBody: "Signups are frozen — your ranking stays right here.",
-    loading: "checking your rank…",
+    closedTitle: "Signups are *closed*.",
+    closedBody: "Signups are closed. Your place stays right here.",
+    reassure: "Free, zero spam.",
+    urgency: "The list just opened ✦",
+    closedFinal: "Your final place: {rank}.",
+    followCta: "Follow the account",
   },
 
   leaderboard: {
-    metaTitle: "The ranking",
-    eyebrow: "the waitlist game",
-    title: "the *ranking*.",
-    privacyNote: "Stage names only — emails never appear here.",
-    listAria: "Waitlist ranking",
-    count: "{n} on the list",
-    refsOne: "1 referral",
-    refsMany: "{n} referrals",
+    metaTitle: "Get in 24h before everyone else",
+    pitch1: "Top 5: 10% off the first collection. Top {top}: in 24h early.",
+    title: ["Sign up.", "Share with your divas.", "Climb, *win*."],
+    steps: [
+      "Sign up: your place + your link",
+      "Top 10: in 24h early",
+      "Top 5: 10% off",
+    ],
+    listAria: "Waitlist top 10",
+    refsOne: "1 diva",
+    refsMany: "{n} divas",
     you: "you ✦",
-    empty: "no one yet — the line starts with you.",
-    joinTitle: "your turn — join the *line*.",
+    empty: "No one yet. The line starts with you.",
+    joinTitle: "Your turn: join the *waitlist*.",
+    boardTitle: "The top 10",
+    live: "live",
+    loadMore: "Show more",
   },
 
   countdown: {
-    label: "Time before release",
-    launching: "Launching {date}.",
+    label: "Before the first collection",
+    launching: "First collection on {date}.",
   },
 
   header: {
-    topAria: "Diva Lines — top",
+    topAria: "Divalines, top of page",
+    board: "Bring your divas, win places",
+    menu: "Menu",
+    close: "Close",
+    navAria: "Main navigation",
+    nav: {
+      manifesto: "Manifesto",
+      collection: "Collection",
+      join: "Join the waitlist (10% off up for grabs!)",
+    },
+  },
+
+  // Prize marquee — the sticky strip above the header. Short, lowercase
+  // fragments; the strip loops them with ✦ separators and links to the
+  // leaderboard, so each item must read on its own.
+  banner: {
+    aria: "Top {top}: 24h early. Top 5: 10% off. Bring your divas, move up.",
+    items: [
+      "Top {top}: 24h early",
+      "Top 5: 10% off",
+      "Bring your divas, move up",
+    ],
   },
 
   footer: {
-    eyebrow: "fall 2026 — limited run",
-    joinLine: "join the *first* line.",
-    sub: "the waitlist sees her before anyone else — and the line is short.",
+    joinLine: "The first *collection* is coming.",
     socialLegalAria: "Social and legal",
     privacy: "Privacy policy",
     legal: "Legal notice",
-    rights: "All rights reserved.",
   },
 
   waitlist: {
@@ -203,18 +227,17 @@ export const en = {
   },
 
   vinyl: {
-    play: "Play the Diva Lines playlist",
+    play: "Play the Divalines playlist",
     pause: "Pause the playlist",
     show: "Show the playlist",
-    collapse: "Collapse the player — music keeps playing",
+    collapse: "Collapse the player, music keeps playing",
     panelTitle: "diva lines playlist",
     nowPlaying: "playing",
     handle: "playlist",
   },
 
   line: {
-    sectionAria: "The first line — fall 2026",
-    controls: "scroll · drag · arrows",
+    sectionAria: "The first line · fall 2026",
     plates: [
       { name: "joséphine", alt: "The bodysuit, open back" },
       { name: "grace", alt: "The wrap top, tied front" },
@@ -223,7 +246,7 @@ export const en = {
   },
 
   tagline: {
-    line1: "Heels *dancewear* brand",
+    line1: "independent *heels* dancewear",
     line2: "made for dancers by dancers, for *movement*",
   },
 
@@ -234,20 +257,20 @@ export const en = {
   },
 
   privacy: {
-    back: "Diva Lines",
+    back: "Divalines",
     title: "Privacy policy",
-    updated: "Last updated: [TO COMPLETE — e.g. 15 August 2026].",
+    updated: "Last updated: [TO COMPLETE, e.g. 15 August 2026].",
     intro:
       "This policy explains how {name} collects and processes your personal data when you join the waitlist, in accordance with the General Data Protection Regulation (GDPR) and the French Data Protection Act.",
     controller: {
       h: "Data controller",
       before:
-        "The data controller is [TO COMPLETE — legal name], a [legal form] with share capital of €[amount], registered with the [city] Trade and Companies Register under number [company no.], with registered office at [full address]. For any question about your data, write to ",
+        "The data controller is [TO COMPLETE: legal name], a [legal form] with share capital of €[amount], registered with the [city] Trade and Companies Register under number [company no.], with registered office at [full address]. For any question about your data, write to ",
       after: ".",
     },
     collect: {
       h: "What we collect",
-      p: "When you join the waitlist we store your email address, the date of signup, your browser language, optional campaign parameters (UTM), and a salted hash of your IP address used only for abuse prevention. Your raw IP address is never stored. If you take part in the referral game we also store the code of the person who invited you and, if you provide it (it's optional), your Instagram handle — used solely to DM you if you win. A generated stage name (e.g. \"diva solaire\") is assigned to you: that name, and never your email or Instagram handle, is what appears on the public leaderboard.",
+      p: "When you join the waitlist we store your email address, the date of signup, your browser language, optional campaign parameters (UTM), and a salted hash of your IP address used only for abuse prevention. Your raw IP address is never stored. If you take part in the referral game we also store the code of the person who invited you and, if you provide it (it's optional), your Instagram handle, used solely to DM you if you win. A generated stage name (e.g. \"Diva Stella Elektra\") is assigned to you: that name, and never your email or Instagram handle, is what appears on the public leaderboard.",
     },
     why: {
       h: "Why we collect it",
@@ -263,14 +286,14 @@ export const en = {
     },
     howLong: {
       h: "How long we keep it",
-      p: "Until 24 months after the brand launch, or until you unsubscribe — whichever comes first. Every email we send includes an unsubscribe link.",
+      p: "Until 24 months after the brand launch, or until you unsubscribe, whichever comes first. Every email we send includes an unsubscribe link.",
     },
     rights: {
       h: "Your rights",
       before:
         "Under the GDPR you have the right to access, rectify, erase, restrict, object to and port your data, and to withdraw consent at any time without affecting the lawfulness of processing carried out beforehand. To exercise these rights, write to ",
       after:
-        " — we answer within 30 days. You may also lodge a complaint with the CNIL (cnil.fr).",
+        ". We answer within 30 days. You may also lodge a complaint with the CNIL (cnil.fr).",
     },
     cookies: {
       h: "Cookies",
@@ -280,14 +303,14 @@ export const en = {
       h: "Legal notice",
       editorH: "Site publisher",
       editorBefore:
-        "[TO COMPLETE — legal name], a [legal form] with share capital of €[amount] — company no. [number] — VAT [number] — registered office: [full address]. Publication director: [TO COMPLETE — name]. Contact: ",
+        "[TO COMPLETE: legal name], a [legal form] with share capital of €[amount] · company no. [number] · VAT [number] · registered office: [full address]. Publication director: [TO COMPLETE: name]. Contact: ",
       editorAfter: ".",
       hostH: "Host",
       hostBody:
-        "This site is hosted by Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA — vercel.com. [To confirm depending on the host chosen.]",
+        "This site is hosted by Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA (vercel.com). [To confirm depending on the host chosen.]",
       ipH: "Intellectual property",
       ipBody:
-        "All content on this site (brand, logotype, text, visuals, graphic design and code) is the exclusive property of [TO COMPLETE — legal name] or its partners. Any reproduction, representation or use, in whole or in part, without prior written authorisation is prohibited.",
+        "All content on this site (brand, logotype, text, visuals, graphic design and code) is the exclusive property of [TO COMPLETE: legal name] or its partners. Any reproduction, representation or use, in whole or in part, without prior written authorisation is prohibited.",
     },
   },
 };

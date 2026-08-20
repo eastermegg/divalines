@@ -37,17 +37,17 @@ const MANIFESTO_TEXT = [
 export const fr: Dictionary = {
   site: {
     title:
-      "Diva Lines — Vêtements de danse en talons, indépendants. Rejoignez la liste d'attente",
+      "Divalines · Dancewear indépendant pour les heels. Rejoins la liste d'attente",
     description:
-      "Vêtements de danse en talons, indépendants, conçus à Paris. Des talons pensés pour le sol, des coupes pensées pour le corps. Première collection cet automne — série limitée, la liste d'attente d'abord.",
-    brandLine: ["Marque indépendante de danse en talons", "Conçu à Paris"],
+      "Dancewear indépendant pour les heels, conçu à Paris. Des vêtements techniques qui suivent chaque mouvement. Première collection cet automne.",
+    brandLine: ["Marque de dancewear indépendante pour danseur.euse.s heels", "Conçue à Paris"],
   },
 
   hero: {
-    hook: ["Tu la sentiras.", "Avant de la voir.", "Point final."],
+    hook: ["Te sentir puissante.", "L'assumer.", "Simplement."],
     paragraph:
-      "Des talons pensés pour le sol, des coupes pensées pour le corps. Première collection cet automne — série limitée, la liste d'attente d'abord.",
-    sr: "Diva Lines — vêtements de danse en talons, indépendants, conçus à Paris",
+      "Des vêtements techniques pensés pour les danseur.euse.s heels, qui suivent chaque mouvement. Première collection cet automne.",
+    sr: "Divalines, marque de dancewear indépendante pour danseur.euse.s heels, conçue à Paris",
   },
 
   manifesto: MANIFESTO_TEXT,
@@ -59,11 +59,8 @@ export const fr: Dictionary = {
   manifestoLabel: "le manifeste",
 
   collection: {
-    label: "La première ligne — automne 2026",
-    title: "quatre pièces. taillées pour la *piste*.",
-    sub: "Esquissées jusqu'au lancement. La liste d'attente les découvre en photo d'abord.",
-    hint: "glisse pour tourner",
-    revealed: "— dévoilé au lancement",
+    label: "La première ligne · Automne 2026",
+    title: "Quatre pièces. Taillées pour le *studio*.",
     items: [
       {
         n: "N°01",
@@ -115,81 +112,108 @@ export const fr: Dictionary = {
 
   form: {
     placeholder: "Entre ton adresse e-mail",
-    cta: "Rejoindre la liste d'attente",
+    cta: "Je m'inscris",
     success: "Tu es sur la liste. ✦",
-    errorInvalid: "Cet e-mail semble incorrect — réessaie.",
+    errorInvalid: "Cet e-mail semble incorrect, réessaie.",
     errorServer: "Un souci est survenu. Réessaie dans un instant.",
-    errorRateLimited: "Doucement — trop d'essais. Patiente quelques minutes.",
-    consent: "En rejoignant, tu acceptes de recevoir des nouvelles du lancement.",
-    proofBefore: "Déjà",
-    proof: "sur la liste ✦",
+    errorRateLimited: "Doucement : trop d'essais. Patiente quelques minutes.",
+    crowd: "la ligne se remplit ✦",
   },
 
   referral: {
-    instaPlaceholder: "@tonhandle",
-    alreadyHint: "déjà inscrite ? entre ton e-mail pour voir ton classement",
-    panelTitle: "tu es sur la *liste*.",
-    rankLine: "Tu es {rank} sur {total}",
-    topTenLine: "Tu es dans le top 10 🖤 garde ta place",
-    toTopOne: "Encore une filleule pour entrer dans le top 10",
-    toTopMany: "Encore {n} filleules pour entrer dans le top 10",
+    seeMyRank: "Voir mon classement",
+    myLink: "Mon lien de parrainage",
+    onList: "Tu es sur la liste 🖤",
+    panelTitle: "Tu es bien *inscrite*.",
+    panelTitleNamed: "{name}, tu es bien *inscrite*.",
+    sharePitch: "Top 5 : −10%. Top {top} : accès 24h avant.",
+    stakes:
+      "Tente ta chance et rejoins la waitlist : Top 5 : −10%. Top {top} : accès 24h avant.",
+    shareLine: "Partage ton lien : chaque diva qui s'inscrit te fait monter.",
+    rankLine: "Ta place : {rank} sur {total}.",
     referralsLine: "{n} inscrites grâce à ton lien ✦",
-    linkLabel: "ton lien de parrainage",
+    linkLabel: "Ton lien",
     copy: "Copier le lien",
     copied: "Lien copié ✦",
     story: "Story Instagram",
     storyToast:
-      "Visuel téléchargé + lien copié — colle-le en sticker lien sur ta story",
+      "Visuel téléchargé + lien copié. Colle-le en sticker lien sur ta story",
     storyFallback:
-      "appui long sur l'image pour l'enregistrer — ton lien est déjà copié",
+      "Appui long sur l'image pour l'enregistrer. Ton lien est déjà copié",
     whatsapp: "Partager sur WhatsApp",
-    whatsappText: "Rejoins-moi sur la waitlist Divalines 🖤 {link}",
-    rule: "Fais monter tes copines — les 10 premières auront accès au drop 24h avant tout le monde.",
-    notYou: "pas toi ?",
+    share: "Partager",
+    shareText:
+      "La marque de dancewear heels dont je t'ai parlé ouvre sa waiting list pour le premier drop ✦ inscris-toi avec mon lien et invite ton gang aussi - les premières ont -10% et l'accès 24h avant",
+    rule: "La première collection est limitée. Inscris-toi, fais entrer les divas de ton gang, monte dans la liste. Top 5 : −10%. Top {top} : accès 24h avant.",
+    notYou: "Pas toi ?",
     close: "Fermer",
-    stageLabel: "sur le classement :",
-    seeBoard: "voir le classement complet",
-    instaAsk: "ton insta — pour te DM si tu gagnes 🖤",
-    instaSaveCta: "Noter",
-    instaSaved: "noté 🖤",
-    storyTitle: "je suis sur la liste",
+    storyTitle: "j'ai pris ma place",
+    storySticker: "la waiting list du premier drop est ouverte",
+    storyLinkSlot: "colle ton lien ici ✦",
     storyOf: "sur {total}",
-    closedTitle: "classement *clôturé*.",
-    closedBody: "Les inscriptions sont fermées — ton classement reste consultable ici.",
-    loading: "on va chercher ton classement…",
+    closedTitle: "Les inscriptions sont *closes*.",
+    closedBody: "Les inscriptions sont closes. Ta place reste consultable ici.",
+    reassure: "Gratuit, zéro spam.",
+    urgency: "La liste vient d'ouvrir ✦",
+    closedFinal: "Ta place finale : {rank}.",
+    followCta: "Suivre le compte",
   },
 
   leaderboard: {
-    metaTitle: "Le classement",
-    eyebrow: "le jeu de la liste",
-    title: "le *classement*.",
-    privacyNote: "Noms de scène uniquement — jamais d'e-mails ici.",
-    listAria: "Classement de la liste d'attente",
-    count: "{n} sur la liste",
-    refsOne: "1 filleule",
-    refsMany: "{n} filleules",
+    metaTitle: "Entre 24h avant tout le monde",
+    pitch1: "Top 5 : −10% sur la première collection. Top {top} : accès 24h avant.",
+    title: ["Inscris-toi.", "Partage à tes divas.", "Monte, *gagne*."],
+    steps: [
+      "Inscris-toi : ta place + ton lien",
+      "Top 10 : accès 24h avant",
+      "Top 5 : −10%",
+    ],
+    listAria: "Top 10 de la liste d'attente",
+    refsOne: "1 diva",
+    refsMany: "{n} divas",
     you: "toi ✦",
-    empty: "personne encore — la ligne commence avec toi.",
-    joinTitle: "à ton tour — rejoins la *ligne*.",
+    empty: "Personne encore. La ligne commence avec toi.",
+    joinTitle: "À ton tour : rejoins la *waitlist*.",
+    boardTitle: "Le top 10",
+    live: "en direct",
+    loadMore: "Voir plus",
   },
 
   countdown: {
-    label: "Temps avant la sortie",
-    launching: "Sortie le {date}.",
+    label: "Avant la première collection",
+    launching: "Première collection le {date}.",
   },
 
   header: {
-    topAria: "Diva Lines — haut",
+    topAria: "Divalines, haut de page",
+    board: "Ramène tes divas, gagne des places",
+    menu: "Menu",
+    close: "Fermer",
+    navAria: "Navigation principale",
+    nav: {
+      manifesto: "Manifeste",
+      collection: "Collection",
+      join: "Rejoins la liste d'attente (−10% à la clé !)",
+    },
+  },
+
+  // Marquee des lots — le bandeau sticky au-dessus du header. Fragments
+  // courts en minuscules ; le bandeau les boucle avec des ✦ et pointe
+  // vers le classement, donc chaque item doit se lire seul.
+  banner: {
+    aria: "Top {top} : 24h d'avance. Top 5 : −10%. Ramène tes divas, passe devant.",
+    items: [
+      "Top {top} : 24h d'avance",
+      "Top 5 : −10%",
+      "Ramène tes divas, passe devant",
+    ],
   },
 
   footer: {
-    eyebrow: "automne 2026 — série limitée",
-    joinLine: "rejoins la *première* ligne.",
-    sub: "la liste d'attente la découvre avant tout le monde — et la ligne est courte.",
+    joinLine: "La première *collection* arrive.",
     socialLegalAria: "Réseaux sociaux et mentions légales",
     privacy: "Politique de confidentialité",
     legal: "Mentions légales",
-    rights: "Tous droits réservés.",
   },
 
   waitlist: {
@@ -199,18 +223,17 @@ export const fr: Dictionary = {
   },
 
   vinyl: {
-    play: "Écouter la playlist Diva Lines",
+    play: "Écouter la playlist Divalines",
     pause: "Mettre la playlist en pause",
     show: "Afficher la playlist",
-    collapse: "Réduire le lecteur — la musique continue",
+    collapse: "Réduire le lecteur, la musique continue",
     panelTitle: "playlist diva lines",
     nowPlaying: "en lecture",
     handle: "playlist",
   },
 
   line: {
-    sectionAria: "La première ligne — automne 2026",
-    controls: "défile · glisse · flèches",
+    sectionAria: "La première ligne · automne 2026",
     plates: [
       { name: "joséphine", alt: "Le body, dos ouvert" },
       { name: "grace", alt: "Le cache-cœur, noué devant" },
@@ -219,7 +242,7 @@ export const fr: Dictionary = {
   },
 
   tagline: {
-    line1: "Marque de vêtements de *danse* en talons",
+    line1: "dancewear indépendant pour les *heels*",
     line2: "faite par des danseuses pour des danseuses, pour le *mouvement*",
   },
 
@@ -230,20 +253,20 @@ export const fr: Dictionary = {
   },
 
   privacy: {
-    back: "Diva Lines",
+    back: "Divalines",
     title: "Politique de confidentialité",
-    updated: "Dernière mise à jour : [À COMPLÉTER — ex. 15 août 2026].",
+    updated: "Dernière mise à jour : [À COMPLÉTER, ex. 15 août 2026].",
     intro:
       "Cette politique explique comment {name} collecte et traite tes données personnelles lorsque tu rejoins la liste d'attente, conformément au Règlement général sur la protection des données (RGPD) et à la loi Informatique et Libertés.",
     controller: {
       h: "Responsable du traitement",
       before:
-        "Le responsable du traitement est [À COMPLÉTER — dénomination sociale], [forme juridique] au capital de [montant] €, immatriculée au RCS de [ville] sous le numéro [SIREN/SIRET], dont le siège social est situé [adresse complète]. Pour toute question relative à tes données, écris à ",
+        "Le responsable du traitement est [À COMPLÉTER : dénomination sociale], [forme juridique] au capital de [montant] €, immatriculée au RCS de [ville] sous le numéro [SIREN/SIRET], dont le siège social est situé [adresse complète]. Pour toute question relative à tes données, écris à ",
       after: ".",
     },
     collect: {
       h: "Ce que nous collectons",
-      p: "Lorsque tu rejoins la liste d'attente, nous conservons ton adresse e-mail, la date d'inscription, la langue de ton navigateur, d'éventuels paramètres de campagne (UTM) et une empreinte salée de ton adresse IP, utilisée uniquement pour prévenir les abus. Ton adresse IP brute n'est jamais stockée. Si tu participes au parrainage, nous conservons aussi le code de la personne qui t'a invitée et, si tu le renseignes (c'est optionnel), ton identifiant Instagram — utilisé uniquement pour te contacter en message privé si tu gagnes. Un nom de scène généré (par exemple « diva solaire ») t'est attribué : c'est lui, et jamais ton e-mail ni ton identifiant Instagram, qui apparaît sur le classement public.",
+      p: "Lorsque tu rejoins la liste d'attente, nous conservons ton adresse e-mail, la date d'inscription, la langue de ton navigateur, d'éventuels paramètres de campagne (UTM) et une empreinte salée de ton adresse IP, utilisée uniquement pour prévenir les abus. Ton adresse IP brute n'est jamais stockée. Si tu participes au parrainage, nous conservons aussi le code de la personne qui t'a invitée et, si tu le renseignes (c'est optionnel), ton identifiant Instagram, utilisé uniquement pour te contacter en message privé si tu gagnes. Un nom de scène généré (par exemple « Diva Stella Elektra ») t'est attribué : c'est lui, et jamais ton e-mail ni ton identifiant Instagram, qui apparaît sur le classement public.",
     },
     why: {
       h: "Pourquoi nous les collectons",
@@ -259,14 +282,14 @@ export const fr: Dictionary = {
     },
     howLong: {
       h: "Combien de temps nous les conservons",
-      p: "Jusqu'à 24 mois après le lancement de la marque, ou jusqu'à ta désinscription — selon la première échéance. Chaque e-mail que nous envoyons contient un lien de désinscription.",
+      p: "Jusqu'à 24 mois après le lancement de la marque, ou jusqu'à ta désinscription, selon la première échéance. Chaque e-mail que nous envoyons contient un lien de désinscription.",
     },
     rights: {
       h: "Tes droits",
       before:
         "En vertu du RGPD, tu disposes d'un droit d'accès, de rectification, d'effacement, de limitation, d'opposition et de portabilité de tes données, et tu peux retirer ton consentement à tout moment sans que cela n'affecte la licéité du traitement effectué auparavant. Pour exercer ces droits, écris à ",
       after:
-        " — nous répondons sous 30 jours. Tu peux aussi introduire une réclamation auprès de la CNIL (cnil.fr).",
+        ". Nous répondons sous 30 jours. Tu peux aussi introduire une réclamation auprès de la CNIL (cnil.fr).",
     },
     cookies: {
       h: "Cookies",
@@ -276,14 +299,14 @@ export const fr: Dictionary = {
       h: "Mentions légales",
       editorH: "Éditeur du site",
       editorBefore:
-        "[À COMPLÉTER — dénomination sociale], [forme juridique] au capital de [montant] € — RCS/SIRET [numéro] — TVA intracommunautaire [numéro] — siège social : [adresse complète]. Directeur de la publication : [À COMPLÉTER — nom]. Contact : ",
+        "[À COMPLÉTER : dénomination sociale], [forme juridique] au capital de [montant] € · RCS/SIRET [numéro] · TVA intracommunautaire [numéro] · siège social : [adresse complète]. Directeur de la publication : [À COMPLÉTER : nom]. Contact : ",
       editorAfter: ".",
       hostH: "Hébergeur",
       hostBody:
-        "Ce site est hébergé par Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis — vercel.com. [À confirmer selon l'hébergeur retenu.]",
+        "Ce site est hébergé par Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis (vercel.com). [À confirmer selon l'hébergeur retenu.]",
       ipH: "Propriété intellectuelle",
       ipBody:
-        "L'ensemble des contenus de ce site (marque, logotype, textes, visuels, création graphique et code) est la propriété exclusive de [À COMPLÉTER — dénomination sociale] ou de ses partenaires. Toute reproduction, représentation ou exploitation, totale ou partielle, sans autorisation écrite préalable est interdite.",
+        "L'ensemble des contenus de ce site (marque, logotype, textes, visuels, création graphique et code) est la propriété exclusive de [À COMPLÉTER : dénomination sociale] ou de ses partenaires. Toute reproduction, représentation ou exploitation, totale ou partielle, sans autorisation écrite préalable est interdite.",
     },
   },
 };

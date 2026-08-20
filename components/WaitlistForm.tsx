@@ -4,8 +4,10 @@ import { useEffect, useId, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/lib/motion";
 import { useDictionary } from "@/lib/i18n/context";
+import { fill } from "@/lib/i18n/fill";
+import { PRIZE_TOP_N } from "@/lib/site";
+import { usePathname, useRouter } from "next/navigation";
 import AccentText from "@/components/AccentText";
-import ReferralModal from "@/components/ReferralModal";
 import ReferralPanel from "@/components/ReferralPanel";
 import {
   broadcastMe,
@@ -20,25 +22,14 @@ import {
 
 type Status = "idle" | "loading" | "success" | "error";
 
-/** Warm heat-palette gradients used for the fake "who's joined" avatars.
- * No real faces — just glowing orbs that read as a community. */
+/** Glowing diva orbs (no faces before launch, brand rule) — the "crowd"
+ * cue under the home/footer form. Overlapping stack, newest on the left. */
 const AVATAR_GRADIENTS = [
   "linear-gradient(135deg,#ff7a2f,#ff5ec4)",
   "linear-gradient(135deg,#ff5ec4,#6e2ba8)",
   "linear-gradient(135deg,#ffd9a8,#ff7a2f)",
   "linear-gradient(135deg,#c4408f,#6e2ba8)",
-  "linear-gradient(135deg,#ff7a2f,#c4408f)",
-  "linear-gradient(135deg,#ff5ec4,#ffd9a8)",
-  "linear-gradient(135deg,#6e2ba8,#ff5ec4)",
-  "linear-gradient(135deg,#ffb347,#ff5ec4)",
 ];
-
-/** Seed the counter from a plausible, already-growing crowd. */
-const BASE_COUNT = 547;
-/** Most avatars we ever show; everyone else lives in the counter. */
-const MAX_AVATARS = 4;
-
-type Avatar = { key: number; gradient: string };
 
 function collectUtm(): Record<string, string> | undefined {
   if (typeof window === "undefined") return undefined;
@@ -53,47 +44,45 @@ function collectUtm(): Record<string, string> | undefined {
 export default function WaitlistForm({
   compact = false,
   onLight = false,
+  expanded = false,
 }: {
   compact?: boolean;
   /** Restyle for a light background (e.g. the footer heat gradient). */
   onLight?: boolean;
+  /** /classement only: a known visitor gets the full referral card
+   * (rank + link + share) inline instead of the slim pill. */
+  expanded?: boolean;
 }) {
   const { dict, locale } = useDictionary();
   const FORM = dict.form;
   const R = dict.referral;
+  const router = useRouter();
+  const pathname = usePathname();
+  // On /classement the state lives inline (expanded card); anywhere else
+  // a fresh signup routes there rather than popping a modal in place.
+  const onBoard = pathname?.includes("/classement") ?? false;
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
   // Referral state: `info` present = she has a code (fresh signup or
   // restored from localStorage), so the form yields to the ranking panel.
   const [info, setInfo] = useState<RankInfo | null>(null);
-  const [showModal, setShowModal] = useState(false);
-  // Fresh signup (not an `already` lookup) → the modal asks for her insta.
-  const [freshJoin, setFreshJoin] = useState(false);
   const [closed, setClosed] = useState(false);
   const successRef = useRef<HTMLParagraphElement>(null);
   const inputId = useId();
   const errorId = useId();
-
-  // Fake social proof — a rotating avatar stack (max 4) and a counter that
-  // ticks up each time someone joins. Deterministic initial values keep SSR
-  // and the first client render in sync (no hydration mismatch).
-  const [count, setCount] = useState(BASE_COUNT);
-  const [avatars, setAvatars] = useState<Avatar[]>(() =>
-    Array.from({ length: MAX_AVATARS }, (_, i) => ({
-      key: i,
-      gradient: AVATAR_GRADIENTS[i % AVATAR_GRADIENTS.length],
-    })),
-  );
-  const seedRef = useRef(MAX_AVATARS);
-  const stackRef = useRef<HTMLDivElement>(null);
-  const countRef = useRef<HTMLSpanElement>(null);
-  const didJoin = useRef(false);
 
   // Referral bootstrap: bank ?ref= for later, then restore "me" — a
   // returning subscriber sees her live ranking instead of the form.
   useEffect(() => {
     captureRef();
     if (document.body.dataset.waitlistClosed === "true") setClosed(true);
+    // Dev-only override so the frozen state is testable without a rebuild
+    // (the DevStateTester widget sets the flag). Stripped from prod builds.
+    if (process.env.NODE_ENV === "development") {
+      try {
+        if (localStorage.getItem("dl:dev:closed") === "true") setClosed(true);
+      } catch {}
+    }
     const me = getMe();
     if (!me) return;
     let cancelled = false;
@@ -128,27 +117,9 @@ export default function WaitlistForm({
   useEffect(() => {
     return onMeChange((next) => {
       setInfo(next);
-      if (next === null) {
-        setShowModal(false);
-        setStatus("idle");
-      }
+      if (next === null) setStatus("idle");
     });
   }, []);
-
-  // Slot a fresh avatar in at the front, drop the oldest, and bump the count
-  // by the new joiner plus a couple of "others" so the crowd feels alive.
-  function registerJoin() {
-    setAvatars((prev) => {
-      const key = seedRef.current++;
-      const next: Avatar = {
-        key,
-        gradient: AVATAR_GRADIENTS[key % AVATAR_GRADIENTS.length],
-      };
-      return [next, ...prev].slice(0, MAX_AVATARS);
-    });
-    setCount((c) => c + 1 + Math.floor(Math.random() * 3));
-    didJoin.current = true;
-  }
 
   // Contrast set — dark veil + cream text by default, or a frosted light
   // pill with ink text + night CTA when placed on a bright gradient.
@@ -189,31 +160,6 @@ export default function WaitlistForm({
       );
   }, [status]);
 
-  // New joiner: pop the freshly-added avatar in and nudge the counter.
-  useEffect(() => {
-    if (!didJoin.current || prefersReducedMotion()) return;
-    const orb = stackRef.current?.firstElementChild;
-    if (orb) {
-      gsap.fromTo(
-        orb,
-        { scale: 0, xPercent: -60, autoAlpha: 0 },
-        { scale: 1, xPercent: 0, autoAlpha: 1, duration: 0.5, ease: "back.out(2)" },
-      );
-    }
-    if (countRef.current) {
-      gsap.fromTo(
-        countRef.current,
-        { scale: 1.35, color: "#ff5ec4" },
-        {
-          scale: 1,
-          color: onLight ? "#0e0a16" : "#f4eadc",
-          duration: 0.5,
-          ease: "power2.out",
-        },
-      );
-    }
-  }, [count]);
-
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (status === "loading") return;
@@ -244,8 +190,10 @@ export default function WaitlistForm({
       });
       const payload = await res.json().catch(() => null);
       if (res.ok && payload?.ref_code) {
-        // Signed up (or found again via `already`) — remember her and open
-        // the modal with rank + link + share actions.
+        // Signed up (or found again via `already`) — remember her, then
+        // hand off to the game page (/classement) where she lands as
+        // État 2. On the board itself the sibling instance updates inline,
+        // so no navigation.
         setMe(payload.ref_code);
         const nextInfo: RankInfo = {
           ref_code: payload.ref_code,
@@ -256,14 +204,11 @@ export default function WaitlistForm({
           diva_name: payload.diva_name,
         };
         setInfo(nextInfo);
-        setFreshJoin(!payload.already);
-        setShowModal(true);
         setStatus("success");
         broadcastMe(nextInfo);
-        if (!payload.already) registerJoin();
+        if (!onBoard) router.push(`/${locale}/classement`);
       } else if (res.ok) {
         // Degraded payload without a code — fall back to the plain pill.
-        registerJoin();
         setStatus("success");
       } else if (res.status === 403) {
         setClosed(true);
@@ -287,80 +232,26 @@ export default function WaitlistForm({
   function onNotYou() {
     setMe(null);
     setInfo(null);
-    setShowModal(false);
     setStatus("idle");
     broadcastMe(null);
   }
 
-  // Persistent social-proof row — an overlapping avatar stack (newest on top)
-  // plus the live count. Rendered under both the form and the success pill so
-  // the freshly-added avatar stays visible after someone joins.
-  const proof = (
-    <div
-      className={`mt-3.5 flex items-center gap-3 px-2 sm:px-4 ${
-        compact ? "" : "justify-center"
-      }`}
-    >
-      <div ref={stackRef} className="flex items-center" aria-hidden="true">
-        {avatars.map((a, i) => (
-          <span
-            key={a.key}
-            className="block size-8 rounded-full border-2 shadow-[0_2px_10px_rgba(0,0,0,0.28)]"
-            style={{
-              backgroundImage: a.gradient,
-              borderColor: onLight ? "#f4eadc" : "#0e0a16",
-              marginLeft: i === 0 ? 0 : -11,
-              zIndex: avatars.length - i,
-            }}
-          />
-        ))}
-      </div>
-      <p className={`text-xs ${consentText}`}>
-        {FORM.proofBefore}{" "}
-        <span ref={countRef} className={`font-medium ${successText}`}>
-          {count.toLocaleString(locale === "en" ? "en-GB" : "fr-FR")}
-        </span>{" "}
-        {FORM.proof}
-      </p>
-    </div>
+  // Sans on purpose: Migra is the editorial accent voice, never a CTA.
+  // Every entry point routes to /classement — the game and her link live
+  // there, never in an in-place modal.
+  const entryLinkClass = `inline-flex shrink-0 cursor-pointer items-center gap-1 text-xs font-medium underline underline-offset-4 ${successText} hover:opacity-80`;
+
+  const boardLink = (label: string) => (
+    <a href={`/${locale}/classement`} className={entryLinkClass}>
+      {label}
+      <span aria-hidden="true">↗</span>
+    </a>
   );
 
-  // She has a code → her live ranking replaces the form ("find my rank"
-  // without email, spec §3). Same content as the modal + "not you?".
-  if (info) {
-    return (
-      // relative z-30: the panel is far taller than the email pill whose
-      // slot it takes (the heat hero bottom-anchors that slot), so it must
-      // paint above neighbouring hero copy — the veil blur does the rest.
-      <div
-        data-waitlist
-        className={`relative z-30 ${compact ? "" : "w-full max-w-[560px]"}`}
-      >
-        <div
-          className={`${onLight ? "surface-card-light" : "surface-card"} rounded-[24px] p-5 text-left sm:p-6`}
-        >
-          {closed ? (
-            <p
-              className={`font-display mb-4 text-2xl italic sm:text-3xl ${successText}`}
-            >
-              <AccentText text={R.closedTitle} />
-            </p>
-          ) : null}
-          <ReferralPanel info={info} onLight={onLight} onNotYou={onNotYou} />
-        </div>
-        {showModal ? (
-          <ReferralModal
-            info={info}
-            askInsta={freshJoin}
-            onClose={() => setShowModal(false)}
-          />
-        ) : null}
-      </div>
-    );
-  }
-
-  // Frozen (J-3) and no identity to show — the state itself is the message.
-  if (closed) {
+  // Frozen (J-3) — the state itself is the message. A known visitor on
+  // /classement still gets her full card (the expanded branch shows the
+  // closed title inside it).
+  if (closed && !(info && expanded)) {
     return (
       <div data-waitlist className={compact ? "" : "w-full max-w-[560px]"}>
         <div
@@ -371,36 +262,153 @@ export default function WaitlistForm({
           </p>
           <p className={`mt-2 text-sm ${consentText}`}>{R.closedBody}</p>
         </div>
+        {/* No proof row in the frozen state — the link stands alone. */}
+        {info ? (
+          <div className="mt-2.5 px-5">{boardLink(R.seeMyRank)}</div>
+        ) : null}
       </div>
     );
   }
 
+  // She's on the list. On /classement (`expanded`) the full referral card
+  // sits inline — that page IS the game, so her link and share actions
+  // show without a tap. The modal still carries fresh-signup extras
+  // (insta ask). Everywhere else: the slim status pill.
+  if (info && expanded) {
+    return (
+      <div
+        data-waitlist
+        className={compact ? "" : "w-full max-w-[560px]"}
+      >
+        <div
+          className={`${onLight ? "surface-card-light" : "surface-card"} rounded-[24px] p-5 text-left sm:p-6`}
+        >
+          <p
+            className={`font-display mb-4 text-2xl italic sm:text-3xl ${successText}`}
+          >
+            <AccentText
+              text={
+                closed
+                  ? R.closedTitle
+                  : info.diva_name
+                    ? fill(R.panelTitleNamed, { name: info.diva_name })
+                    : R.panelTitle
+              }
+            />
+          </p>
+          <ReferralPanel
+            info={info}
+            onLight={onLight}
+            onNotYou={closed ? undefined : onNotYou}
+            closed={closed}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // She's on the list → the form gives way to a slim status pill: the
+  // state in words plus two doors to /classement (where rank + link live).
+  if (info) {
+    return (
+      <div data-waitlist className={compact ? "" : "w-full max-w-[560px]"}>
+        <div
+          className={`${surface} flex w-full flex-wrap items-baseline gap-x-4 gap-y-1.5 rounded-[20px] px-6 py-4 sm:rounded-pill sm:py-[22px] ${
+            compact ? "" : "justify-center"
+          }`}
+        >
+          <p className={`font-serif text-base italic ${successText}`}>
+            {R.onList}
+          </p>
+          {boardLink(R.seeMyRank)}
+          {boardLink(R.myLink)}
+        </div>
+      </div>
+    );
+  }
+
+  // /classement (`expanded`): every state sits in the same card the
+  // referral view uses — the ring, the title, the milestone ladder (what
+  // she wins, right by the field), then the form.
+  const cardWrap = (children: React.ReactNode) =>
+    expanded ? (
+      <div
+        className={`${onLight ? "surface-card-light" : "surface-card"} rounded-[24px] p-5 sm:p-6`}
+      >
+        <p
+          className={`font-display mb-3 text-xl italic text-balance sm:text-2xl ${successText}`}
+        >
+          <AccentText text={dict.leaderboard.joinTitle} />
+        </p>
+        {/* Milestone ladder — one short line per step, the payoff right
+            above the field. */}
+        <ol className="mb-4 flex flex-col gap-2.5">
+          {dict.leaderboard.steps.map((step, i) => (
+            <li key={step} className="flex items-center gap-3">
+              <span className="flex size-[22px] shrink-0 items-center justify-center rounded-full bg-[linear-gradient(120deg,#d1569e_0%,#ff7a2f_80%)] text-[11px] font-semibold text-night">
+                {i + 1}
+              </span>
+              <p className={`text-sm font-medium ${successText}`}>{step}</p>
+            </li>
+          ))}
+        </ol>
+        {children}
+      </div>
+    ) : (
+      children
+    );
+
   if (status === "success") {
     return (
       <div data-waitlist className={compact ? "" : "w-full max-w-[560px]"}>
-        <p
-          ref={successRef}
-          data-waitlist-success
-          className={`${surface} ${successText} flex h-[54px] w-full items-center justify-center rounded-[16px] px-8 font-serif text-base italic sm:h-[68px] sm:rounded-pill`}
-          role="status"
-        >
-          {FORM.success}
-        </p>
-        {proof}
+        {cardWrap(
+          <>
+            <p
+              ref={successRef}
+              data-waitlist-success
+              className={`${surface} ${successText} flex h-[54px] w-full items-center justify-center rounded-[16px] px-8 font-serif text-base italic sm:h-[68px] sm:rounded-pill`}
+              role="status"
+            >
+              {FORM.success}
+            </p>
+          </>,
+        )}
       </div>
     );
   }
 
   return (
     <div data-waitlist className={compact ? "" : "w-full max-w-[560px]"}>
+      {cardWrap(
+        <>
+          {/* The stakes, above the field — the promise reads BEFORE she
+              types (home + footer; /classement's hero already sells it). */}
+          {expanded ? null : (
+            <p
+              className={`mb-3 px-5 text-sm font-medium ${successText} ${
+                compact ? "" : "text-center"
+              }`}
+            >
+              {fill(R.stakes, { top: PRIZE_TOP_N })} ✦
+            </p>
+          )}
+          {/* expanded (/classement panel): the column is narrow, so the form
+          stays stacked at every size — input above, CTA below. */}
       <form
         onSubmit={onSubmit}
         noValidate
-        className={`${surface} flex flex-col gap-1.5 rounded-[20px] p-1.5 sm:h-[68px] sm:flex-row sm:items-center sm:gap-2 sm:rounded-pill sm:p-[7px]`}
+        className={
+          expanded
+            ? "flex flex-col gap-2.5"
+            : `${surface} flex flex-col gap-1.5 rounded-[20px] p-1.5 sm:h-[68px] sm:flex-row sm:items-center sm:gap-2 sm:rounded-pill sm:p-[7px]`
+        }
       >
         <label htmlFor={inputId} className="sr-only">
           {dict.waitlist.emailLabel}
         </label>
+        {/* Expanded (/classement): the wrapper carries no surface, so the
+            border lives on the field itself; elsewhere the pill's surface
+            frames it and the input stays transparent. */}
         <input
           id={inputId}
           name="email"
@@ -410,7 +418,11 @@ export default function WaitlistForm({
           placeholder={FORM.placeholder}
           aria-invalid={status === "error" || undefined}
           aria-describedby={status === "error" ? errorId : undefined}
-          className={`h-[54px] min-w-0 rounded-[14px] bg-transparent px-5 text-[16px] ${inputText} focus-visible:outline-offset-[-2px] sm:h-[54px] sm:flex-1 sm:rounded-pill sm:px-[22px] sm:text-base`}
+          className={`h-[54px] min-w-0 px-5 text-[16px] ${inputText} focus-visible:outline-offset-[-2px] sm:text-base ${
+            expanded
+              ? `${surface} rounded-[16px]`
+              : "rounded-[14px] bg-transparent sm:h-[54px] sm:flex-1 sm:rounded-pill sm:px-[22px]"
+          }`}
         />
         {/* Honeypot — invisible to humans, tempting to bots */}
         <input
@@ -425,7 +437,9 @@ export default function WaitlistForm({
           type="submit"
           data-waitlist-cta
           disabled={status === "loading"}
-          className={`${ctaClass} h-[54px] shrink-0 cursor-pointer rounded-[14px] px-7 text-base font-medium transition-[background-color,opacity] disabled:opacity-70 sm:h-[54px] sm:rounded-pill`}
+          className={`${ctaClass} h-[54px] shrink-0 cursor-pointer rounded-[14px] px-7 text-base font-medium transition-[background-color,opacity] disabled:opacity-70 ${
+            expanded ? "w-full" : "sm:h-[54px] sm:rounded-pill"
+          }`}
         >
           {status === "loading" ? (
             <span
@@ -443,18 +457,55 @@ export default function WaitlistForm({
         </button>
       </form>
 
-      {status === "error" && error ? (
-        <div className="mt-2.5 px-5">
-          <p id={errorId} aria-live="polite" className={`text-xs ${errorText}`}>
-            {error}
-          </p>
-        </div>
+          {status === "error" && error ? (
+            <div className="mt-2.5 px-5">
+              <p
+                id={errorId}
+                aria-live="polite"
+                className={`text-xs ${errorText}`}
+              >
+                {error}
+              </p>
+            </div>
+          ) : null}
+
+          {/* /classement: reassurance under the CTA. Home/footer show no
+              hint here (the "find my rank again" line was removed). */}
+          {expanded ? (
+            <p className={`mt-1.5 text-xs ${consentText}`}>{R.reassure}</p>
+          ) : null}
+
+          {/* Crowd cue — the glowing diva orbs (no faces, no fake count),
+              home/footer only; /classement has the gang ring + urgency. */}
+          {expanded ? null : (
+            <div
+              className={`mt-3.5 flex items-center gap-3 px-2 sm:px-4 ${
+                compact ? "" : "justify-center"
+              }`}
+            >
+              <div className="flex items-center" aria-hidden="true">
+                {AVATAR_GRADIENTS.map((g, i) => (
+                  <span
+                    key={i}
+                    className="block size-8 rounded-full border-2 shadow-[0_2px_10px_rgba(0,0,0,0.28)]"
+                    style={{
+                      backgroundImage: g,
+                      borderColor: onLight ? "#f4eadc" : "#0e0a16",
+                      marginLeft: i === 0 ? 0 : -11,
+                      zIndex: AVATAR_GRADIENTS.length - i,
+                    }}
+                  />
+                ))}
+              </div>
+              <p className={`text-xs ${consentText}`}>{FORM.crowd}</p>
+            </div>
+          )}
+        </>,
+      )}
+      {/* Urgency line — replaces the old counter on /classement only */}
+      {expanded ? (
+        <p className={`mt-3 text-xs ${consentText}`}>{R.urgency}</p>
       ) : null}
-
-      {/* The form doubles as "find my rank again" on a fresh device. */}
-      <p className={`mt-2 px-5 text-xs ${consentText}`}>{R.alreadyHint}</p>
-
-      {proof}
     </div>
   );
 }

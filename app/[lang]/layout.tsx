@@ -5,6 +5,8 @@ import { SITE } from "@/lib/site";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { DictionaryProvider } from "@/lib/i18n/context";
+import DevStateTester from "@/components/DevStateTester";
+import RefCapture from "@/components/RefCapture";
 import "../globals.css";
 
 type LangParams = { params: Promise<{ lang: string }> };
@@ -93,6 +95,8 @@ export default async function RootLayout({
         <DictionaryProvider dict={dict} locale={locale}>
           {children}
         </DictionaryProvider>
+        <RefCapture />
+        {process.env.NODE_ENV === "development" ? <DevStateTester /> : null}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

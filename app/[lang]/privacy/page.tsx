@@ -18,7 +18,7 @@ export async function generateMetadata({
   const { lang } = await params;
   const dict = getDictionary(isLocale(lang) ? lang : "fr");
   return {
-    title: `${dict.privacy.title} — ${SITE.name}`,
+    title: `${dict.privacy.title} · ${SITE.name}`,
     robots: { index: false },
   };
 }
@@ -47,7 +47,7 @@ export default async function PrivacyPage({ params }: LangParams) {
       <main>
         {/* Title band — warm heat glow + grain over the night page, the
             display wordmark voice: lowercase italic. */}
-        <section className="relative isolate overflow-hidden pt-[calc(var(--header-h)+clamp(5rem,15vh,9.5rem))] pb-[clamp(4rem,9vh,7.5rem)]">
+        <section className="relative isolate overflow-hidden pt-[calc(var(--banner-h)+var(--header-h)+clamp(5rem,15vh,9.5rem))] pb-[clamp(4rem,9vh,7.5rem)]">
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 -z-10 opacity-80"
@@ -164,7 +164,7 @@ function Section({
   return (
     <section
       id={id}
-      className="scroll-mt-[calc(var(--header-h)+2rem)] border-t border-cream/10 py-11"
+      className="scroll-mt-[calc(var(--banner-h)+var(--header-h)+2rem)] border-t border-cream/10 py-11"
     >
       <h2 className="font-display text-[clamp(1.35rem,3vw,1.9rem)] text-cream italic lowercase">
         {h}

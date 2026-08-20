@@ -172,11 +172,13 @@ export default function Manifesto() {
       )}
 
       <div className="container-editorial">
-        {/* Act 2 — the answer */}
+        {/* Act 2 — the answer. THE manifesto anchor lands here (not on the
+            pinned reproaches above), so #manifesto opens on the text. */}
         <p
           ref={bodyRef}
+          id="manifesto"
           data-manifesto
-          className="mx-auto mt-[clamp(4rem,10vh,8rem)] max-w-[68rem] font-display text-manifesto text-cream italic"
+          className="mx-auto mt-[clamp(4rem,10vh,8rem)] max-w-[68rem] scroll-mt-[calc(var(--banner-h)+var(--header-h)+2rem)] font-display text-manifesto text-cream italic"
         >
           {words.map((w, i) => (
             <span key={i} className="mword" style={w.color ? { color: w.color } : undefined}>

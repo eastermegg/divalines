@@ -1,9 +1,17 @@
 "use client";
 
 import { useGSAP } from "@gsap/react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import CornerFrame from "@/components/CornerFrame";
-import HeatShaderBackground from "@/components/HeatShaderBackground";
+import dynamic from "next/dynamic";
+
+// The heat field is a WebGL shader with a CSS gradient stand-in already
+// painting underneath — split it out of the critical bundle and let it
+// fade in when its chunk lands.
+const HeatShaderBackground = dynamic(
+  () => import("@/components/HeatShaderBackground"),
+  { ssr: false },
+);
 import DitherCycler from "@/components/variants/dither/DitherCycler";
 import WaitlistForm from "@/components/WaitlistForm";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
@@ -40,41 +48,43 @@ export default function Hero() {
           .to("[data-hero-veil]", { opacity: 0.6 }, 0);
       });
 
-      // The waitlist bar is fixed to the viewport bottom so it stays put
-      // while you scroll the page. Retire it once the footer's own join
-      // form rises into view, so the two never overlap. Runs regardless of
-      // motion preference (native scroll drives ScrollTrigger under reduce).
-      const footer = document.querySelector<HTMLElement>("#join");
-      if (footer)
-        ScrollTrigger.create({
-          trigger: footer,
-          start: "top bottom",
-          onEnter: () =>
-            gsap.to("[data-hero-form]", {
-              autoAlpha: 0,
-              y: 24,
-              duration: 0.4,
-              ease: "power2.out",
-              overwrite: "auto",
-            }),
-          onLeaveBack: () =>
-            gsap.to("[data-hero-form]", {
-              autoAlpha: 1,
-              y: 0,
-              duration: 0.4,
-              ease: "power2.out",
-              overwrite: "auto",
-            }),
-        });
     },
     { scope: ref },
   );
+
+  // The waitlist bar is fixed to the viewport bottom (centered) so it
+  // stays put for the whole scroll — including the pinned collection
+  // strip. At the very end it hands off to the footer's own centered
+  // form: same axis, same width, so the swap reads as the bar docking in.
+  // IntersectionObserver on the footer SLOT, not ScrollTrigger: the
+  // collection pin mounts late and stretches the page, which left
+  // scroll-position-based triggers firing viewports too early. The
+  // observer reacts to the slot actually appearing — geometry-proof.
+  useEffect(() => {
+    const dock = document.querySelector("[data-footer-form]");
+    if (!dock) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        gsap.to("[data-hero-form]", {
+          autoAlpha: entry.isIntersecting ? 0 : 1,
+          y: entry.isIntersecting ? 24 : 0,
+          duration: 0.35,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
+      },
+      // Fire a touch before the slot's first pixel so the swap overlaps.
+      { rootMargin: "0px 0px 4% 0px" },
+    );
+    io.observe(dock);
+    return () => io.disconnect();
+  }, []);
 
   return (
     <section
       ref={ref}
       data-hero
-      className="relative flex min-h-svh flex-col justify-end pb-[clamp(2rem,6vh,4.5rem)]"
+      className="relative flex min-h-svh flex-col justify-end pb-[clamp(3.5rem,10vh,7rem)]"
     >
       <h1 className="sr-only">{dict.hero.sr}</h1>
 

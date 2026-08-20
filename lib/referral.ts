@@ -17,7 +17,7 @@ export type RankInfo = {
   referrals?: number;
   total?: number;
   to_top10?: number;
-  /** Public stage name shown on the leaderboard ("diva solaire"). */
+  /** Public stage name shown on the leaderboard ("Diva Stella Elektra"). */
   diva_name?: string;
 };
 

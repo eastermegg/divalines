@@ -17,12 +17,15 @@ export default function Footer() {
         className="grain pointer-events-none absolute inset-0 -z-10 opacity-[0.38] mix-blend-soft-light"
       />
       <div className="w-full px-[17px] py-[clamp(4rem,10vh,8rem)] md:pr-[26px] md:pl-[29px]">
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-16">
+        {/* Centered join block — the slot the hero's fixed form docks
+            into: same center axis, same width, so the handoff at the end
+            of the scroll reads as the form settling in. */}
+        <div className="mx-auto flex max-w-[720px] flex-col items-center gap-7 text-center">
           <p className="font-display text-manifesto text-night italic">
             <AccentText text={dict.footer.joinLine} />
           </p>
-          <div className="w-full max-w-[560px] lg:shrink-0 lg:basis-[560px]">
-            <WaitlistForm compact onLight />
+          <div data-footer-form className="w-full lg:max-w-[520px]">
+            <WaitlistForm onLight />
           </div>
         </div>
 
@@ -49,6 +52,9 @@ export default function Footer() {
                 {s.label}
               </a>
             ))}
+            <a href={`/${locale}/classement`} className="transition-colors hover:text-night">
+              {dict.header.board}
+            </a>
             <a href={`/${locale}/privacy`} className="transition-colors hover:text-night">
               {dict.footer.privacy}
             </a>
@@ -58,7 +64,7 @@ export default function Footer() {
             <LanguageSwitcher />
           </nav>
 
-          <p>© 2026 {SITE.name}. {dict.footer.rights}</p>
+          <p>© 2026 {SITE.name}.</p>
         </div>
       </div>
     </footer>
