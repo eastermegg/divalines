@@ -34,8 +34,13 @@ export type Leaderboard = {
   top: LeaderboardRow[];
 };
 
-export async function fetchLeaderboard(): Promise<Leaderboard> {
-  const res = await fetch("/api/waitlist/leaderboard");
+export async function fetchLeaderboard(fresh = false): Promise<Leaderboard> {
+  // `fresh` skips the CDN cache (s-maxage=60) right after her own signup,
+  // so her row/total appear without a reload.
+  const url = fresh
+    ? `/api/waitlist/leaderboard?fresh=${Date.now()}`
+    : "/api/waitlist/leaderboard";
+  const res = await fetch(url);
   if (!res.ok) throw new Error(`leaderboard fetch failed: ${res.status}`);
   return (await res.json()) as Leaderboard;
 }

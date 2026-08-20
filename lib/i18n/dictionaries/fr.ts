@@ -129,7 +129,7 @@ export const fr: Dictionary = {
     sharePitch: "Top 5 : −10%. Top {top} : accès 24h avant.",
     stakes:
       "Tente ta chance et rejoins la waitlist : Top 5 : −10%. Top {top} : accès 24h avant.",
-    shareLine: "Partage ton lien : chaque diva qui s'inscrit te fait monter.",
+    shareLine: "Plus tes copines rejoignent via ton lien, plus tu gagnes des places.",
     rankLine: "Ta place : {rank} sur {total}.",
     referralsLine: "{n} inscrites grâce à ton lien ✦",
     linkLabel: "Ton lien",
