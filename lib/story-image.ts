@@ -17,8 +17,12 @@
 const W = 1080;
 const H = 1920;
 
-/** Designer asset (optional). Swap the file in /public, keep the name. */
-const BG_SRC = "/story-bg.png";
+/** Designer templates — one per heat colourway. The variant is stable
+ * per person (hashed from her ref code) so SHE always gets her colour,
+ * but colours alternate across the gang's stories. Each template already
+ * carries the wordmark + descriptor (top) and the dashed "Ajoute ton
+ * lien ✦" slot (lower third) — the canvas only adds the dynamic band. */
+const BG_SRCS = ["/story-bg-1.png", "/story-bg-2.png", "/story-bg-3.png"];
 
 export type StoryText = {
   /** Her stage name — "Diva Rita Mirage". The shareable identity. */
@@ -33,10 +37,13 @@ export type StoryText = {
   ofTotal: string;
   /** « la waiting list du premier drop est ouverte » */
   sticker: string;
-  /** « colle ton lien ici ✦ » — label inside the link-sticker slot */
+  /** « colle ton lien ici ✦ » — label inside the link-sticker slot
+   * (programmatic fallback only; the designer templates carry theirs) */
   linkSlot: string;
-  /** wordmark line, e.g. "divalines" */
+  /** wordmark line, e.g. "divalines" (fallback only) */
   brand: string;
+  /** 0..2 — colourway index, stable per person */
+  variant: number;
 };
 
 /** Resolve one of the site's font stacks (--font-display / --font-serif /
@@ -100,7 +107,7 @@ export async function renderStoryImage(text: StoryText): Promise<string> {
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("canvas 2d unavailable");
 
-  const bg = await loadImage(BG_SRC);
+  const bg = await loadImage(BG_SRCS[Math.abs(text.variant) % BG_SRCS.length]);
   if (bg) {
     // Cover-fit the designer asset.
     const scale = Math.max(W / bg.width, H / bg.height);
@@ -138,11 +145,47 @@ export async function renderStoryImage(text: StoryText): Promise<string> {
   const displayFont = (px: number) => `italic 500 ${px}px ${display}`;
   const maxW = W - 140;
   const topTier = text.rankValue <= 10;
+  // Bright designer gradients: cream ink with a soft night shadow reads on
+  // every colourway (an orange glow would vanish on the orange template).
+  const inkShadow = () => {
+    ctx.shadowColor = "rgba(14,10,22,0.55)";
+    ctx.shadowBlur = 30;
+    ctx.shadowOffsetY = 4;
+  };
 
-  // ── One hierarchy for everyone: the PLACE is the story. The name is
-  // the small identity line; the rank is enormous; below, a dashed slot
-  // marks exactly where she pastes the link sticker.
+  if (bg) {
+    // ── Template mode: wordmark, descriptor and the link slot are baked
+    // into the asset — draw only the dynamic band in the free middle zone.
+    ctx.save();
+    inkShadow();
 
+    // 1. name — identity line, serif italic, deliberately small
+    ctx.fillStyle = "rgba(244,234,220,0.95)";
+    fit(text.name, 60, 40, maxW, serifFont);
+    ctx.fillText(text.name, W / 2, H * 0.3);
+
+    // 2. claim
+    ctx.font = serifFont(44);
+    ctx.fillText(text.claim, W / 2, H * 0.3 + 84);
+
+    // 3. tier badge (top 10 only), then the rank — the hero
+    if (topTier) {
+      ctx.font = displayFont(80);
+      ctx.fillText(text.rankValue <= 5 ? "Top 5 ✦" : "Top 10 ✦", W / 2, H * 0.43);
+    }
+    ctx.fillStyle = "#f4eadc";
+    fit(text.rankLabel, 400, 220, maxW, displayFont);
+    ctx.fillText(text.rankLabel, W / 2, H * 0.44 + 330);
+
+    ctx.font = serifFont(60);
+    ctx.fillStyle = "#f4eadc";
+    ctx.fillText(text.ofTotal, W / 2, H * 0.44 + 440);
+    ctx.restore();
+
+    return canvas.toDataURL("image/png");
+  }
+
+  // ── Programmatic fallback (no template asset): draw everything.
   // 1. name — identity line, serif italic, deliberately small
   ctx.fillStyle = "rgba(244,234,220,0.9)";
   fit(text.name, 60, 40, maxW, serifFont);
