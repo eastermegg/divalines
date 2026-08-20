@@ -38,6 +38,13 @@ export async function GET(req: Request) {
 
   const supabase = getSupabaseAdmin();
   if (!supabase) {
+    // Dev convenience only — in production a missing Supabase env must
+    // fail loudly, never serve the mock board. Empty payload: the board
+    // simply hides (total < 10) instead of showing phantom divas.
+    if (process.env.NODE_ENV === "production") {
+      console.error("[waitlist:leaderboard] missing Supabase env in production");
+      return NextResponse.json({ ok: true, closed, total: 0, top: [] });
+    }
     return NextResponse.json({
       ok: true,
       dev: true,
