@@ -93,7 +93,7 @@ export default async function ClassementPage({ params }: LangParams) {
             </div>
             {/* Only the CARD straddles the title band (negative margin
                 pulls it up into the glow); the board column stays put. */}
-            <aside className="order-1 -mt-[clamp(6.5rem,14.5vh,9rem)] lg:order-2 lg:-mt-[clamp(5.5rem,12.5vh,8.25rem)]">
+            <aside className="order-1 -mt-[clamp(6.5rem,14.5vh,9rem)] lg:order-2 lg:-mt-[clamp(17rem,37vh,24rem)]">
               <div className="lg:sticky lg:top-[calc(var(--banner-h)+var(--header-h)+2rem)]">
                 <WaitlistForm compact expanded />
               </div>
