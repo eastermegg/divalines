@@ -148,7 +148,7 @@ export const fr: Dictionary = {
     notYou: "Pas toi ?",
     close: "Fermer",
     storyTitle: "j'ai pris ma place pour le premier drop",
-    storySticker: "la waiting list est ouverte",
+    storySticker: "rejoins et tente de gagner −10% et l'accès 24h avant",
     storyLinkSlot: "colle ton lien ici ✦",
     storyOf: "sur {total}",
     closedTitle: "Les inscriptions sont *closes*.",
