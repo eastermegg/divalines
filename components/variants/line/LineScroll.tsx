@@ -81,6 +81,12 @@ export default function LineScroll({
         },
       });
 
+      // This pin mounts a beat later than the other sections' triggers
+      // (gated on `mounted`), and its spacer stretches the page by the
+      // track overflow — every trigger measured below us (the hero form's
+      // footer dock) is now positioned viewports too early. Remeasure.
+      ScrollTrigger.refresh();
+
       return () => {
         tween.scrollTrigger?.kill();
         tween.kill();
@@ -134,7 +140,6 @@ export default function LineScroll({
                   <h2 className="mt-4 max-w-[7em] font-display text-[clamp(2.25rem,6vw,5rem)] leading-[1.02] text-cream italic">
                     <AccentText text={dict.collection.title} />
                   </h2>
-                  <p className="mt-4 max-w-xs text-sm text-cream/60">{dict.collection.sub}</p>
                 </div>
               </div>
             </div>
@@ -146,7 +151,7 @@ export default function LineScroll({
           {LINE.map((item, i) => (
             <article
               key={item.src}
-              className="relative flex h-full w-[86vw] shrink-0 items-end justify-center border-l border-cream/12 pb-[10vh] sm:w-[56vw] lg:w-[42vw]"
+              className="relative flex h-full w-[86vw] shrink-0 items-end justify-center border-l border-cream/12 pb-[10vh] sm:w-[56vw] lg:w-[42vw] lg:pb-[230px]"
             >
               {/* the veiled plate — tall, bottom-aligned to a common floor
                   line with a band of floor kept beneath the hem (brand rule:
@@ -155,10 +160,10 @@ export default function LineScroll({
               <div className="relative aspect-[4/5] h-[62vh] max-h-[620px]">
                 <VeiledPlate src={item.src} alt={item.alt ?? item.name} />
 
-                {/* the name, set huge and vertical, laid OVER the plate and
-                    bleeding off its left edge — baseline on the hem so the
-                    type sits on the same floor line as the plate bottom. */}
-                <div className="pointer-events-none absolute bottom-0 left-0 -translate-x-1/2">
+                {/* the name, set huge and vertical, laid INSIDE the plate
+                    along its left edge — anchored to the hem with a small
+                    inset so it reads as printed on the glass. */}
+                <div className="pointer-events-none absolute bottom-[clamp(0.9rem,2.5vh,1.5rem)] left-[clamp(0.9rem,2vw,1.5rem)]">
                   <p className="mb-3 text-[11px] tracking-[0.3em] text-cream/50 tabular-nums">
                     [{String(i + 1).padStart(2, "0")}/{total}]
                   </p>

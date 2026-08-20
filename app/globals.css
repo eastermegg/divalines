@@ -56,6 +56,7 @@
   );
   --section-gap: clamp(96px, 14vh, 200px);
   --header-h: 66px; /* 65.08px in the maquette */
+  --banner-h: 40px; /* prize marquee strip above the header */
 }
 
 /* ------------------------------------------------------------------ */
@@ -226,6 +227,62 @@
     inset: -4px;
     filter: blur(11px);
     opacity: 0.5;
+  }
+}
+
+/* Prize marquee — the track holds two identical copies of the run, so
+   translating -50% loops seamlessly. Hover pauses (it's a link); reduced
+   motion stills it and lets the first items stand as a static banner. */
+.marquee-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  height: 100%;
+  animation: marquee-scroll 52s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/* Live indicator — a small heat dot with a ping ring, signalling the
+   leaderboard is live. Stilled under reduced motion. */
+.live-dot {
+  position: relative;
+  display: inline-block;
+  border-radius: 9999px;
+  background: var(--color-heat-orange);
+}
+.live-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--color-heat-orange);
+  animation: live-ping 1.9s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes live-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .live-dot::after {
+    animation: none;
   }
 }
 

@@ -12,8 +12,8 @@ import { RELEASE_DATE_FALLBACK } from "@/lib/site";
  *
  * Shared by both line presentations (the scrubbed stack + the infinite
  * wall), so the veil looks identical wherever a piece appears. */
-export const VEIL_MAX_BLUR = 6; // px — far from launch: a light frost, the piece reads clearly
-export const VEIL_MIN_BLUR = 3; // px — at the drop: just a whisper of veil, never fully crisp
+export const VEIL_MAX_BLUR = 8; // px — far from launch: a proper frost, the piece stays teased
+export const VEIL_MIN_BLUR = 4; // px — at the drop: just a whisper of veil, never fully crisp
 export const VEIL_WINDOW_MS = 75 * 24 * 60 * 60 * 1000; // veil lifts over the last 75d
 const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
 
@@ -48,15 +48,38 @@ export function useVeilBlur(releaseDate: string = RELEASE_DATE_FALLBACK): number
 export default function VeiledPlate({ src, alt }: { src: string; alt: string }) {
   return (
     <div className="relative h-full w-full overflow-hidden rounded-sm shadow-[0_30px_90px_rgba(0,0,0,0.55)]">
-      {/* scale-[1.08] hides the transparent halo the blur pulls off the
-          edges; the container clips the overflow. */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={src}
-        alt={alt}
-        className="h-full w-full scale-[1.08] object-cover transition-[filter] duration-700 ease-out"
-        style={{ filter: "blur(var(--veil-blur, 22px)) saturate(1.05) brightness(0.92)" }}
-      />
+      {/* Refraction — horizontally-streaked turbulence displacing the
+          image like ridged glass. It lives on a WRAPPER so the blur on
+          the <img> survives even if a browser rejects the SVG filter
+          (the veil must never fail open). scale-[1.08] hides both the
+          blur halo and the displacement's pulled edges. */}
+      <svg aria-hidden className="absolute h-0 w-0">
+        <filter id="veil-refract">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.008 0.12"
+            numOctaves="2"
+            seed="7"
+            result="noise"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="noise"
+            scale="26"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+      </svg>
+      <div className="h-full w-full" style={{ filter: "url(#veil-refract)" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={src}
+          alt={alt}
+          className="h-full w-full scale-[1.08] object-cover transition-[filter] duration-700 ease-out"
+          style={{ filter: "blur(var(--veil-blur, 22px)) saturate(1.05) brightness(0.92)" }}
+        />
+      </div>
       {/* heat wash — warms the glass, sinks the foot into the dark page */}
       <div
         aria-hidden

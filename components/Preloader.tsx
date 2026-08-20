@@ -1,11 +1,19 @@
 "use client";
 
 import { useGSAP } from "@gsap/react";
-import { useRef } from "react";
+import dynamic from "next/dynamic";
+import { useEffect, useRef, useState } from "react";
 import AccentText from "@/components/AccentText";
 import { Wordmark } from "@/components/Brand";
-import ChromaticWaves from "@/components/originkit/chromatic-waves-custom-style";
 import { gsap } from "@/lib/gsap";
+
+// The halftone field is WebGL (ogl) and the intro plays once per session —
+// load its chunk only when the intro is actually pending, never on
+// returning visits.
+const ChromaticWaves = dynamic(
+  () => import("@/components/originkit/chromatic-waves-custom-style"),
+  { ssr: false },
+);
 import {
   introAlreadyPlayed,
   markIntroPlayed,
@@ -30,6 +38,12 @@ import { useDictionary } from "@/lib/i18n/context";
 export default function Preloader() {
   const { dict } = useDictionary();
   const ref = useRef<HTMLDivElement>(null);
+  // True only when the intro will actually play this session — gates the
+  // WebGL field so returning visits never even load its chunk.
+  const [playing, setPlaying] = useState(false);
+  useEffect(() => {
+    setPlaying(document.documentElement.dataset.intro === "pending");
+  }, []);
 
   useGSAP(() => {
     const finish = () => {
@@ -150,7 +164,7 @@ export default function Preloader() {
       {/* chromatic-waves halftone field — the saved Originkit `custom-style`
           preset. It self-pauses once the preloader is display:none. */}
       <div data-pl-field className="absolute inset-0 opacity-0">
-        <ChromaticWaves />
+        {playing ? <ChromaticWaves /> : null}
       </div>
 
       {/* top-left lockup: wordmark rising through its mask, tagline beneath,
@@ -163,7 +177,7 @@ export default function Preloader() {
         />
         <div className="relative overflow-hidden py-[6px]">
           <div data-pl-logo className="select-none">
-            <Wordmark title="Diva Lines" className="h-[46px] w-[220px] text-white" />
+            <Wordmark title="Divalines" className="h-[46px] w-[220px] text-white" />
           </div>
         </div>
         <p

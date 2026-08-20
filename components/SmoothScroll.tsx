@@ -20,7 +20,10 @@ export default function SmoothScroll({ lerp = 0.1 }: { lerp?: number }) {
     gsap.ticker.add(raf);
     gsap.ticker.lagSmoothing(0);
 
-    // Lenis has no built-in anchor handling.
+    // Lenis has no built-in anchor handling. The -72 offset lands targets
+    // clear of the header; the pinned collection section in particular
+    // frames its title card at exactly this offset (larger values overshoot
+    // and reveal the section above).
     const onClick = (e: MouseEvent) => {
       const anchor = (e.target as HTMLElement).closest?.('a[href^="#"]');
       if (!anchor) return;

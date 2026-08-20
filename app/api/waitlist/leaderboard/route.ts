@@ -6,16 +6,16 @@ export const runtime = "nodejs";
 
 /** Dev-mode leaderboard so the page is designable with zero env. */
 const DEV_TOP = [
-  { rank: 1, diva_name: "diva braise", referrals: 14 },
-  { rank: 2, diva_name: "diva solaire", referrals: 11 },
-  { rank: 3, diva_name: "diva vertige", referrals: 9 },
-  { rank: 4, diva_name: "diva féline", referrals: 8 },
-  { rank: 5, diva_name: "diva nocturne", referrals: 7 },
-  { rank: 6, diva_name: "diva onde", referrals: 6 },
-  { rank: 7, diva_name: "diva insoumise", referrals: 5 },
-  { rank: 8, diva_name: "diva ambrée", referrals: 4 },
-  { rank: 9, diva_name: "diva céleste", referrals: 3 },
-  { rank: 10, diva_name: "diva murmure", referrals: 3 },
+  { rank: 1, diva_name: "Diva Edgy Stiletto", referrals: 4 },
+  { rank: 2, diva_name: "Diva Stella Elektra", referrals: 3 },
+  { rank: 3, diva_name: "Diva Roxy Vertigo", referrals: 3 },
+  { rank: 4, diva_name: "Diva Velvet Panther", referrals: 2 },
+  { rank: 5, diva_name: "Diva Nikita Midnight", referrals: 2 },
+  { rank: 6, diva_name: "Diva Coco Glitter", referrals: 1 },
+  { rank: 7, diva_name: "Diva Lola Fever", referrals: 1 },
+  { rank: 8, diva_name: "Diva Gigi Vinyl", referrals: 1 },
+  { rank: 9, diva_name: "Diva Nova Comet", referrals: 1 },
+  { rank: 10, diva_name: "Diva Ruby Ember", referrals: 1 },
 ];
 
 /**
@@ -42,7 +42,7 @@ export async function GET(req: Request) {
       ok: true,
       dev: true,
       closed,
-      total: 230,
+      total: 92,
       top: DEV_TOP,
     });
   }

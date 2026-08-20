@@ -44,7 +44,7 @@ export async function GET(req: Request) {
       referrals: 3,
       to_top10: 2,
       total: 230,
-      diva_name: "diva solaire",
+      diva_name: "Diva Stella Elektra",
     });
   }
 

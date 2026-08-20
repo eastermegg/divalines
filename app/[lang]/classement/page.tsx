@@ -5,7 +5,8 @@ import SmoothScroll from "@/components/SmoothScroll";
 import AccentText, { plainText } from "@/components/AccentText";
 import LeaderboardBoard from "@/components/LeaderboardBoard";
 import WaitlistForm from "@/components/WaitlistForm";
-import { SITE, getReleaseDate } from "@/lib/site";
+import { PRIZE_TOP_N, SITE, getReleaseDate } from "@/lib/site";
+import { fill } from "@/lib/i18n/fill";
 import { isLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 
@@ -17,8 +18,8 @@ export async function generateMetadata({
   const { lang } = await params;
   const dict = getDictionary(isLocale(lang) ? lang : "fr");
   return {
-    title: `${dict.leaderboard.metaTitle} — ${SITE.name}`,
-    description: plainText(dict.referral.rule),
+    title: `${dict.leaderboard.metaTitle} · ${SITE.name}`,
+    description: plainText(fill(dict.referral.rule, { top: PRIZE_TOP_N })),
   };
 }
 
@@ -42,7 +43,9 @@ export default async function ClassementPage({ params }: LangParams) {
 
       <main>
         {/* Title band — same warm heat glow as the privacy page */}
-        <section className="relative isolate overflow-hidden pt-[calc(var(--header-h)+clamp(5rem,15vh,9.5rem))] pb-[clamp(3rem,7vh,5.5rem)]">
+        {/* Title band — compact on purpose: the ranking must be visible
+            without scrolling, the title just introduces it. */}
+        <section className="relative isolate overflow-hidden pt-[calc(var(--banner-h)+var(--header-h)+clamp(1.75rem,4vh,3rem))] pb-[clamp(6.5rem,14vh,9.5rem)]">
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 -z-10 opacity-80"
@@ -55,38 +58,45 @@ export default async function ClassementPage({ params }: LangParams) {
             aria-hidden
             className="grain pointer-events-none absolute inset-0 -z-10 opacity-[0.28] mix-blend-soft-light"
           />
-          <div className="container-editorial max-w-[720px]">
+          {/* Breadcrumb, no eyebrow, then straight into the pitch. Same
+              container width as the board below so left edges line up. */}
+          <div className="container-editorial max-w-[720px] lg:max-w-[1200px]">
             <a
               href={`/${locale}`}
-              className="text-[11px] tracking-[0.3em] text-cream/50 uppercase transition-colors hover:text-cream"
+              className="text-[11px] tracking-[0.3em] text-cream/50 transition-colors hover:text-cream"
             >
               ← {SITE.name}
             </a>
-            <p className="mt-8 text-[11px] tracking-[0.3em] text-cream/50">
-              {L.eyebrow}
-            </p>
-            <h1 className="mt-3 font-display text-[clamp(2.5rem,7vw,5rem)] leading-[0.95] text-cream italic lowercase">
-              <AccentText text={L.title} />
+            <h1 className="mt-4 font-display text-[clamp(2.25rem,5vw,3.5rem)] leading-[1.02] text-cream italic">
+              {L.title.map((line) => (
+                <span key={line} className="block">
+                  <AccentText text={line} />
+                </span>
+              ))}
             </h1>
-            <p className="mt-6 max-w-[52ch] text-sm leading-relaxed text-cream/70">
-              {dict.referral.rule}
-            </p>
+            {/* The title stands alone; the payoff (Top 5 / Top 10) lives in
+                the milestone ladder inside the signup card. */}
           </div>
         </section>
 
-        {/* The board */}
-        <div className="container-editorial max-w-[720px] pb-[clamp(3rem,7vh,5rem)]">
-          <LeaderboardBoard />
-        </div>
-
-        {/* Join / your link — WaitlistForm already renders the right
-            state: form for new visitors, ranking panel when signed up,
-            frozen block when closed. */}
-        <div className="container-editorial max-w-[720px] pb-[var(--section-gap)]">
-          <p className="font-display mb-6 text-2xl text-cream italic sm:text-3xl">
-            <AccentText text={L.joinTitle} />
-          </p>
-          <WaitlistForm compact />
+        {/* Side by side on desktop — top 10 left, card sticky right so
+            form/link stay in view. Mobile keeps the funnel order: form
+            (above the fold) → urgency → top 10. */}
+        <div className="container-editorial relative z-10 max-w-[720px] pt-[clamp(0.75rem,2vh,1.25rem)] pb-[var(--section-gap)] lg:max-w-[1200px]">
+          <div className="flex flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-x-16">
+            {/* The board does NOT straddle the band (its rows would sit
+                astride the grain seam) — it starts right below it. */}
+            <div className="order-2 mt-[clamp(2.5rem,6vh,4rem)] lg:order-1 lg:mt-0">
+              <LeaderboardBoard />
+            </div>
+            {/* Only the CARD straddles the title band (negative margin
+                pulls it up into the glow); the board column stays put. */}
+            <aside className="order-1 -mt-[clamp(5.5rem,12.5vh,8.25rem)] lg:order-2">
+              <div className="lg:sticky lg:top-[calc(var(--banner-h)+var(--header-h)+2rem)]">
+                <WaitlistForm compact expanded />
+              </div>
+            </aside>
+          </div>
         </div>
       </main>
 

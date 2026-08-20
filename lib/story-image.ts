@@ -21,13 +21,21 @@ const H = 1920;
 const BG_SRC = "/story-bg.png";
 
 export type StoryText = {
-  /** « je suis sur la liste » */
-  title: string;
-  /** e.g. "47e" — display-face hero line */
-  rank: string;
+  /** Her stage name — "Diva Rita Mirage". The shareable identity. */
+  name: string;
+  /** « j'ai pris ma place » */
+  claim: string;
+  /** e.g. "109e" — formatted rank */
+  rankLabel: string;
+  /** Numeric rank — drives the template (top 10: rank hero; else: name hero) */
+  rankValue: number;
   /** e.g. "sur 230" */
   ofTotal: string;
-  /** wordmark line, e.g. "divalines" (fallback background only) */
+  /** « la waiting list du premier drop est ouverte » */
+  sticker: string;
+  /** « colle ton lien ici ✦ » — label inside the link-sticker slot */
+  linkSlot: string;
+  /** wordmark line, e.g. "divalines" */
   brand: string;
 };
 
@@ -107,33 +115,107 @@ export async function renderStoryImage(text: StoryText): Promise<string> {
   const serif = fontStack("--font-serif", "Georgia, serif");
 
   ctx.textAlign = "center";
-  ctx.fillStyle = "#f4eadc";
 
-  // Dynamic band, centered — the zone the designer keeps free on the asset.
-  ctx.font = `italic 200 64px ${serif}`;
-  ctx.fillText(text.title, W / 2, H * 0.42);
+  /** Shrink a font until `str` fits maxWidth (long stage names — "Diva
+   * Nikita Cadence" — must never bleed off the 9:16 frame). */
+  const fit = (
+    str: string,
+    px: number,
+    minPx: number,
+    maxWidth: number,
+    font: (px: number) => string,
+  ) => {
+    let size = px;
+    ctx.font = font(size);
+    while (size > minPx && ctx.measureText(str).width > maxWidth) {
+      size -= 4;
+      ctx.font = font(size);
+    }
+    return size;
+  };
 
+  const serifFont = (px: number) => `italic 200 ${px}px ${serif}`;
+  const displayFont = (px: number) => `italic 500 ${px}px ${display}`;
+  const maxW = W - 140;
+  const topTier = text.rankValue <= 10;
+
+  // ── One hierarchy for everyone: the PLACE is the story. The name is
+  // the small identity line; the rank is enormous; below, a dashed slot
+  // marks exactly where she pastes the link sticker.
+
+  // 1. name — identity line, serif italic, deliberately small
+  ctx.fillStyle = "rgba(244,234,220,0.9)";
+  fit(text.name, 60, 40, maxW, serifFont);
+  ctx.fillText(text.name, W / 2, H * 0.27);
+
+  // 2. claim
+  ctx.font = serifFont(44);
+  ctx.fillStyle = "rgba(244,234,220,0.7)";
+  ctx.fillText(text.claim, W / 2, H * 0.27 + 84);
+
+  // 3. tier badge (top 10 only), then the rank — the hero
+  if (topTier) {
+    ctx.fillStyle = "#ffd9a8";
+    ctx.font = displayFont(80);
+    ctx.fillText(text.rankValue <= 5 ? "Top 5 ✦" : "Top 10 ✦", W / 2, H * 0.40);
+  }
   ctx.save();
   ctx.shadowColor = "rgba(255,122,47,0.55)";
-  ctx.shadowBlur = 90;
-  ctx.font = `italic 500 340px ${display}`;
-  ctx.fillText(text.rank, W / 2, H * 0.42 + 330);
+  ctx.shadowBlur = 100;
+  ctx.fillStyle = "#f4eadc";
+  fit(text.rankLabel, 400, 220, maxW, displayFont);
+  ctx.fillText(text.rankLabel, W / 2, H * 0.41 + 360);
   ctx.restore();
 
-  ctx.font = `italic 200 72px ${serif}`;
+  ctx.font = serifFont(64);
   ctx.fillStyle = "rgba(244,234,220,0.82)";
-  ctx.fillText(text.ofTotal, W / 2, H * 0.42 + 460);
+  ctx.fillText(text.ofTotal, W / 2, H * 0.41 + 470);
 
-  if (!bg) {
-    // Wordmark signature — only on the programmatic backdrop; the
-    // designer's asset carries its own branding.
-    ctx.fillStyle = "#f4eadc";
-    ctx.font = `italic 500 84px ${display}`;
-    ctx.fillText(text.brand, W / 2, H * 0.88);
-    ctx.font = `italic 200 40px ${serif}`;
-    ctx.fillStyle = "rgba(244,234,220,0.7)";
-    ctx.fillText("✦", W / 2, H * 0.88 + 80);
-  }
+  // 4. the link-sticker slot — a dashed pill marking where the sticker
+  // goes, with the open-list line above it.
+  ctx.font = serifFont(40);
+  ctx.fillStyle = "rgba(244,234,220,0.72)";
+  fit(text.sticker, 40, 28, maxW, serifFont);
+  ctx.fillText(text.sticker, W / 2, H * 0.715);
+
+  const slotW = 620;
+  const slotH = 128;
+  const slotX = (W - slotW) / 2;
+  const slotY = H * 0.735;
+  // roundRect is missing on older Safari — trace the pill by hand then.
+  const pill = () => {
+    ctx.beginPath();
+    if (typeof ctx.roundRect === "function") {
+      ctx.roundRect(slotX, slotY, slotW, slotH, slotH / 2);
+    } else {
+      const r = slotH / 2;
+      ctx.moveTo(slotX + r, slotY);
+      ctx.lineTo(slotX + slotW - r, slotY);
+      ctx.arc(slotX + slotW - r, slotY + r, r, -Math.PI / 2, Math.PI / 2);
+      ctx.lineTo(slotX + r, slotY + slotH);
+      ctx.arc(slotX + r, slotY + r, r, Math.PI / 2, (3 * Math.PI) / 2);
+      ctx.closePath();
+    }
+  };
+  ctx.save();
+  ctx.strokeStyle = "rgba(255,122,47,0.85)";
+  ctx.lineWidth = 3;
+  ctx.setLineDash([18, 14]);
+  pill();
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = "rgba(255,122,47,0.08)";
+  pill();
+  ctx.fill();
+  ctx.restore();
+  ctx.fillStyle = "#ffd9a8";
+  fit(text.linkSlot, 46, 32, slotW - 80, serifFont);
+  ctx.fillText(text.linkSlot, W / 2, slotY + slotH / 2 + 16);
+
+  // 5. wordmark signature
+  ctx.fillStyle = "#f4eadc";
+  ctx.font = displayFont(72);
+  ctx.fillText(`${text.brand} ✦`, W / 2, H * 0.915);
 
   return canvas.toDataURL("image/png");
 }
