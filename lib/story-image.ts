@@ -156,11 +156,16 @@ export async function renderStoryImage(text: StoryText): Promise<string> {
   if (bg) {
     // ── Template mode: wordmark, descriptor and the link slot are baked
     // into the asset — draw only the dynamic band in the free middle zone.
+    // The orange→lavande template (index 2) has a LIGHT middle band, so
+    // its ink flips to night (no shadow needed on a light ground).
+    const darkInk = Math.abs(text.variant) % BG_SRCS.length === 2;
+    const soft = darkInk ? "rgba(14,10,22,0.9)" : "rgba(244,234,220,0.95)";
+    const full = darkInk ? "#0e0a16" : "#f4eadc";
     ctx.save();
-    inkShadow();
+    if (!darkInk) inkShadow();
 
     // 1. name — identity line, serif italic, deliberately small
-    ctx.fillStyle = "rgba(244,234,220,0.95)";
+    ctx.fillStyle = soft;
     fit(text.name, 60, 40, maxW, serifFont);
     ctx.fillText(text.name, W / 2, H * 0.3);
 
@@ -173,16 +178,17 @@ export async function renderStoryImage(text: StoryText): Promise<string> {
       ctx.font = displayFont(80);
       ctx.fillText(text.rankValue <= 5 ? "Top 5 ✦" : "Top 10 ✦", W / 2, H * 0.43);
     }
-    ctx.fillStyle = "#f4eadc";
+    ctx.fillStyle = full;
     fit(text.rankLabel, 400, 220, maxW, displayFont);
     ctx.fillText(text.rankLabel, W / 2, H * 0.44 + 330);
 
     ctx.font = serifFont(60);
-    ctx.fillStyle = "#f4eadc";
+    ctx.fillStyle = full;
     ctx.fillText(text.ofTotal, W / 2, H * 0.44 + 440);
 
     // The context line — why this story exists — just above the baked-in
     // "Ajoute ton lien" slot.
+    ctx.fillStyle = soft;
     fit(text.sticker, 42, 30, maxW, serifFont);
     ctx.fillText(text.sticker, W / 2, H * 0.705);
     ctx.restore();
