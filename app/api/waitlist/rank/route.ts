@@ -35,6 +35,12 @@ export async function GET(req: Request) {
 
   const supabase = getSupabaseAdmin();
   if (!supabase) {
+    // Dev convenience only — in production a missing Supabase env must
+    // fail loudly, never serve mock data (fake signups, phantom ranks).
+    if (process.env.NODE_ENV === "production") {
+      console.error("[waitlist] missing Supabase env in production");
+      return NextResponse.json({ ok: false, error: "server" }, { status: 503 });
+    }
     return NextResponse.json({
       ok: true,
       dev: true,
