@@ -179,7 +179,6 @@ export const en = {
     empty: "No one yet. The line starts with you.",
     joinTitle: "Your turn: join the *waitlist*.",
     boardTitle: "The top 10",
-    live: "live",
     loadMore: "Show more",
   },
 

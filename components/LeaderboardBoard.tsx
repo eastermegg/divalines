@@ -246,14 +246,6 @@ export default function LeaderboardBoard() {
 
   return (
     <div ref={rootRef}>
-      {/* Live indicator only (no "top 10" title). */}
-      <div className="mb-8 flex justify-end">
-        <span className="flex items-center gap-1.5 text-[10px] tracking-[0.18em] text-cream/45 uppercase">
-          <span aria-hidden className="live-dot size-1.5" />
-          {L.live}
-        </span>
-      </div>
-
       {/* Your ranking on top of everything — no frame, just the lined row
           with its heat accents (glow name, orange rule, "toi ✦"). */}
       {me?.rank !== undefined && me.diva_name ? (

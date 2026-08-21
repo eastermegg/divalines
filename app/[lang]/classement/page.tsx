@@ -58,16 +58,10 @@ export default async function ClassementPage({ params }: LangParams) {
             aria-hidden
             className="grain pointer-events-none absolute inset-0 -z-10 opacity-[0.28] mix-blend-soft-light"
           />
-          {/* Breadcrumb, no eyebrow, then straight into the pitch. Same
+          {/* No breadcrumb, no eyebrow — straight into the pitch. Same
               container width as the board below so left edges line up. */}
           <div className="container-editorial max-w-[720px] lg:max-w-[1200px]">
-            <a
-              href={`/${locale}`}
-              className="text-[11px] tracking-[0.3em] text-cream/50 transition-colors hover:text-cream"
-            >
-              ← {SITE.name}
-            </a>
-            <h1 className="mt-4 font-display text-[clamp(2.25rem,5vw,3.5rem)] leading-[1.02] text-cream italic">
+            <h1 className="font-display text-[clamp(2.25rem,5vw,3.5rem)] leading-[1.02] text-cream italic">
               {L.title.map((line) => (
                 <span key={line} className="block">
                   <AccentText text={line} />
