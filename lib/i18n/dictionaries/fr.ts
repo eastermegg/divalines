@@ -175,7 +175,6 @@ export const fr: Dictionary = {
     empty: "Personne encore. La ligne commence avec toi.",
     joinTitle: "À ton tour : rejoins la *waitlist*.",
     boardTitle: "Le top 10",
-    live: "en direct",
     loadMore: "Voir plus",
   },
 
